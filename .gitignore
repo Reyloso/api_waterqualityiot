@@ -23,4 +23,5 @@ dockerfile
 /users/migrations
 /measurements/migrations
 /devices/migrations
+/configurations/migrations
 

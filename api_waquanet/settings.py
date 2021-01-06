@@ -21,6 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
+AUTH_USER_MODEL = 'users.User'
+AUTH_PROFILE_MODULE = 'users.User'
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -30,6 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
+    'configurations',
+    'devices',
+    'measurements',
+    
 ]
 
 MIDDLEWARE = [
