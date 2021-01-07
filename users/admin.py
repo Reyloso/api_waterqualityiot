@@ -11,7 +11,7 @@ class Usuarios(BaseUserAdmin):
     form = CustomUserChangeForm
 
     fieldsets = (
-        (None, {'fields': ('email', 'username','password')}),
+        (None, {'fields': ( 'username','password')}),
         ('Information', {'fields': ('type_user','date_joined','last_login',)}),
         ('Permissions', {'fields': ('user_permissions','groups','is_active','is_superuser','is_admin')}),
         
@@ -20,13 +20,13 @@ class Usuarios(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ( 'type_user','email', 'username', 'password1', 'password2','user_permissions','groups','is_active','is_superuser','is_admin')}
+            'fields': ( 'type_user', 'username', 'password1', 'password2','user_permissions','groups','is_active','is_superuser','is_admin')}
         ),
     )
 
     list_filter = ('type_user',)
-    search_fields = ('id','email','username','type_user',)
-    list_display = ['id','type_user','username', 'email','date_joined','last_login']
+    search_fields = ('id','username','type_user',)
+    list_display = ['id','type_user','username','date_joined','last_login']
 
     class Meta:
         model = User

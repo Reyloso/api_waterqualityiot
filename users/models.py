@@ -1,11 +1,11 @@
-  # Create your models here.
+# Create your models here.
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
-from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, AbstractUser, PermissionsMixin)
+from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser,PermissionsMixin)
 from django.core.exceptions import ObjectDoesNotExist,ValidationError
 from django.contrib.auth.models import User, Group
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -45,10 +45,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     type_users = (
         ('Admin', 'Admin'),
         ('Staff', 'Staff'),
+        ('Device', 'Device'),
     )
     
     username = models.CharField(_('username'), max_length=50, unique=True, null=False, blank=False)
-    email = models.EmailField(_('email addres'), max_length=255, unique=True, blank=False, null=False)
     type_user = models.CharField(max_length=20, choices=type_users, default='Staff', null=False, blank=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -59,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManagers()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = "Usuario"
@@ -85,9 +85,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 # class staff hereda de user
 class Staff(User):
-    """ clase starr que hereda de la clase user"""
-
-    # type_document = models.ForeignKey(TypeDocument, on_delete=models.PROTECT, null=False, blank=False)
+    """ clase staff que hereda de la clase user"""
+    email = models.EmailField(_('email addres'), max_length=255, unique=True, blank=False, null=False)
     country = models.ForeignKey(Country, on_delete=models.PROTECT, null=False, blank=False)
     department = models.ForeignKey(Department, on_delete=models.PROTECT, null=False, blank=False)
     city = models.ForeignKey(City, on_delete=models.PROTECT, null=False, blank=False)
@@ -102,6 +101,9 @@ class Staff(User):
     
 
     def full_name(self):
+        return str(self.name + " " + self.first_surname)
+
+    def __str__(self):
         return str(self.name + " " + self.first_surname)
 
     class Meta:
