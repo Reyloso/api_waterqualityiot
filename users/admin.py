@@ -13,14 +13,14 @@ class Usuarios(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'username','password')}),
         ('Information', {'fields': ('type_user','date_joined','last_login',)}),
-        ('Permissions', {'fields': ()}),
+        ('Permissions', {'fields': ('user_permissions','groups','is_active','is_superuser','is_admin')}),
         
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ( 'type_user','email', 'username', 'password1', 'password2')}
+            'fields': ( 'type_user','email', 'username', 'password1', 'password2','user_permissions','groups','is_active','is_superuser','is_admin')}
         ),
     )
 
@@ -32,4 +32,36 @@ class Usuarios(BaseUserAdmin):
         model = User
 
 
-# admin.site.register(User,Usuarios)
+class Staffs(BaseUserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    """ admin para las personas """
+
+
+    fieldsets = (
+        (None, {'fields': ('email', 'username','password')}),
+        ('Information personal', {'fields': ('name','first_surname','second_surname','address','city','country','department','phone',)}),
+        ('Information account', {'fields': ('type_user','status','date_joined','last_login',)}),
+        ('Permissions', {'fields': ('is_active', 'is_superuser','groups','user_permissions')}),
+        
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('type_user','email', 'username', 'password1', 'password2','name','first_surname','second_surname','country','department','city','phone','is_superuser','is_staff','is_active','status', 'groups','user_permissions')}
+        ),
+    )
+
+    list_filter = ('status','is_active','type_user','is_superuser')
+    search_fields = ('id','username','email','name', 'first_surname', 'first_surname')
+    list_display = ['id','type_user','username','email','name', 'first_surname', 'status', 'is_active','created_at', 'updated_at', 'deleted_at']
+
+
+    class Meta:
+        model = Staff
+
+
+
+admin.site.register(User,Usuarios)
+admin.site.register(Staff,Staffs)

@@ -15,29 +15,25 @@ from configurations.models import (Country, Department, City)
 class UserManagers(BaseUserManager):
     """ clase abstracta de usuario para extender el modelo usuario """
 
-    def create_user(self, username, password=None):
+    def create_user(self, username, password=None, **other_fields):
         if not username:
             raise ValueError('Debe tener un nombre de usuario')
 
         user = self.model(
             username=username,
+            **other_fields
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, password):
-        user = self.create_user(username, password=password)
-        uother_fields.setdefault('is_staff', True)
-        other_fields.setdefault('is_superuser', True)
-        other_fields.setdefault('is_active', True)
-
-        if other_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must be assigned to is_staff=True.')
-        if other_fields.get('is_superuser') is not True:
-            raise ValueError(
-                'Superuser must be assigned to is_superuser=True.')
+    def create_superuser(self, username, password, **other_fields):
+        user = self.create_user(username, password=password,**other_fields)
+        user.is_active = True
+        user.is_admin = True
+        user.is_superuser = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
@@ -47,16 +43,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     """ clase usuario que hereda de la clase abstracta user manager """
 
     type_users = (
-        ('OWNER', 'OWNER'),
-        ('STAFF', 'STAFF'),
-        ('COMERCIAL', 'COMERCIAL'),
+        ('Admin', 'Admin'),
+        ('Staff', 'Staff'),
     )
     
     username = models.CharField(_('username'), max_length=50, unique=True, null=False, blank=False)
     email = models.EmailField(_('email addres'), max_length=255, unique=True, blank=False, null=False)
-    type_user = models.CharField(max_length=20, choices=type_users, default='OWNER', null=False, blank=False)
+    type_user = models.CharField(max_length=20, choices=type_users, default='Staff', null=False, blank=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=True)
+    status = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = UserManagers()

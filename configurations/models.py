@@ -25,7 +25,7 @@ class Country(models.Model):
         )
 
     def __str__(self):
-        return str("ID: {} | Name: {} | Indicative: {}".format(self.id, self.name,self.indicative))
+        return str("ID: {} | Name: {} ".format(self.id, self.name))
 
 # models type departament
 class Department(models.Model):
@@ -50,7 +50,7 @@ class Department(models.Model):
         )
 
     def __str__(self):
-        return str("ID: {} | Name: {} | Indicative: {}".format(self.id, self.name,self.indicative))
+        return str("ID: {} | Name: {} ".format(self.id, self.name))
 
 
 # ciudades
