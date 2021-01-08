@@ -1,2 +1,2 @@
 # Waquanet
-Red de sensores para medir la calidad del aire
+Red de sensores para medir la calidad del agua
