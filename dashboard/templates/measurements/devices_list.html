@@ -1,0 +1,52 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block contenido %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatables_boostrap.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatable_responsive_boostrap.css' %}">
+  
+<div class="page-header">
+    <div class="container-fluid">
+      <h2 class="h5 no-margin-bottom">{{ titulo }}</h2>
+    </div>
+  </div>
+  <section class="no-padding-top no-padding-bottom">
+    <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6 col-lg-6">
+            <!-- Simple card-->
+            <div class="card" style="padding-top: 28px; display: flex; align-items: center;"><i style="font-size: xx-large;" class="fa fa-microchip fa-7x"></i>
+              <div class="card-body">
+                <h5 class="card-title">Dispositivo </h5>
+                <p class="card-text">Ubicación: Monteria.</p><a  href="{% url 'measurement-view'  %}" class="btn btn-primary">Ver Medición</a>
+              </div>
+            </div>
+            
+          </div>
+          <div class="col-md-6 col-lg-6">
+          <div class="card" style="padding-top: 28px; display: flex; align-items: center;"><i style="font-size: xx-large;" class="fa fa-microchip fa-7x"></i>
+            <div class="card-body">
+              <h5 class="card-title">Dispositivo 2</h5>
+              <p class="card-text">Ubicación: Cereté.</p><a  href="{% url 'measurement-view'  %}" class="btn btn-primary">Ver Medición</a>
+            </div>
+          </div>
+        </div>
+         
+        </div>
+        </div>
+          <!-- end col--> 
+  </section>
+  
+ 
+ 
+  <script  type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+  <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_jquery.js' %}" defer > </script>
+
+  <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_boostrap.js' %}" defer > </script>
+  <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_boostrap.js' %}" defer > </script>
+  <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_min.js' %}" defer > </script>
+  <script type="text/javascript" src= "{% static 'vendor/datatables/tables_datatables.js' %}" defer > </script>
+<script type="text/javascript">
+      
+</script>
+  
+  {% endblock %}

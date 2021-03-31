@@ -1,0 +1,30 @@
+{% load static %}
+<nav id="sidebar">
+    <!-- Sidebar Header-->
+    <div class="sidebar-header d-flex align-items-center">
+      <div class="avatar"><img src="{% static 'img/profile.png' %}" alt="..." class="img-fluid rounded-circle"></div>
+      <div class="title">
+        <h1 class="h5">Yulieth Carriazo</h1>
+        <p>Admin</p>
+      </div>
+    </div>
+    <!-- Sidebar Navidation Menus--><span class="heading">Menú</span>
+    <ul class="list-unstyled">
+            {% url 'home' as Url %}  
+            <li {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %}><a href="{% url 'home'  %}"> <i class="icon-home"></i>Inicio </a></li>
+            {% url 'devices-list' as Url %}  
+            <li {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %}><a href="{% url 'devices-list'  %}"><i class="fa fa-microchip"></i>Dispositivos </a></li>
+            {% url 'measurement-select' as Url %}  
+            <li {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %}  ><a  href="{% url 'measurement-select'  %}"> <i class="fa fa-thermometer-three-quarters"></i> Mediciones </a></li>
+            <!-- <li ><a href="forms.html"> <i class="icon-padnote"></i>Reportes </a></li> -->
+            <li ><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-users"></i>Usuarios </a>
+              <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
+                {% url 'user-list' as Url %}  
+                <li  {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %} ><a href="{% url 'user-list'  %}"> <i class="fa fa-user-o"></i>Usuarios</a></li>
+                {% url 'groups-list' as Url %}  
+                <li {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %}><a  href="{% url 'groups-list'  %}"> <i class="fa fa-users"></i>Grupos</a></li>
+              </ul>
+            </li>
+            <!-- <li><a href="login.html"> <i class="icon-logout"></i>Login page </a></li> -->
+    </ul>
+  </nav>

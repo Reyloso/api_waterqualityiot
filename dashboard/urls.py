@@ -1,0 +1,20 @@
+from django.urls import path, include
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('devices/', views.devices_list, name='devices-list'),
+    path('devices/new', views.devices_new, name='devices-new'),
+
+    path('measurement/', views.device_list_measurement, name='measurement-select'),
+    path('measurement/view', views.measurement_view, name='measurement-view'),
+
+    path('users/', views.users_list, name='user-list'),
+    path('users/new', views.users_new, name='user-new'),
+
+    path('group/', views.groups_list, name='groups-list'),
+    path('group/new', views.group_new, name='group-new'),
+    # path('mis_posts', views.mis_posts, name='mis_posts'),
+    # path('categorias', views.categorias, name='categorias'),
+    # path('detalle_post/<int:pk>', views.detalle_post),
+]
