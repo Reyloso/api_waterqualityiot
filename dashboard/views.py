@@ -1,11 +1,14 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.contrib import admin
 
 # Create your views here.
+@login_required
 def home(request):
 	context = admin.site.each_context(request)
 	context.update({'titulo': 'Inicio',})
 	return render(request,'base/home.html', context)
+
 
 
 def devices_list(request):

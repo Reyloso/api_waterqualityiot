@@ -1,7 +1,13 @@
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
+    #login
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), 
+            name='login'),
+          
+    path('accounts/', include('django.contrib.auth.urls')), # new
     path('', views.home, name='home'),
     path('devices/', views.devices_list, name='devices-list'),
     path('devices/new', views.devices_new, name='devices-new'),
