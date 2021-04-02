@@ -25,6 +25,17 @@
                 <li {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %}><a  href="{% url 'groups-list'  %}"> <i class="fa fa-users"></i>Grupos</a></li>
               </ul>
             </li>
+
+            <li ><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-cog"></i>Configuracion</a>
+              <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
+                {% url 'user-list' as Url %}  
+                <li  {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %} ><a href="{% url 'user-list'  %}"> <i class="fa fa-globe"></i>Paises</a></li>
+                {% url 'groups-list' as Url %}  
+                <li {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %}><a  href="{% url 'groups-list'  %}"> <i class="fa fa-globe"></i>Ciudades</a></li>
+                {% url 'groups-list' as Url %}  
+                <li {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %}><a  href="{% url 'groups-list'  %}"> <i class="fa fa-globe"></i>Departamentos</a></li>                
+              </ul>
+            </li>            
             <!-- <li><a href="login.html"> <i class="icon-logout"></i>Login page </a></li> -->
     </ul>
   </nav>
