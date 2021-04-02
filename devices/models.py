@@ -19,7 +19,11 @@ class Device(User):
     department = models.ForeignKey(Department, on_delete=models.PROTECT, null=False, blank=False)
     city = models.ForeignKey(City, on_delete=models.PROTECT, null=False, blank=False)
     name = models.CharField(unique=True, max_length=100, null=False, blank=False)
-    imei_code = models.CharField(unique=True, max_length=100, null=False, blank=False)
+    mac_code = models.CharField(unique=True, max_length=100, null=False, blank=False)
+    publish_key_pubnub = models.CharField(max_length=100, null=True, blank=True)
+    suscribe_key_pubnub = models.CharField(max_length=100, null=True, blank=True)
+    uuid_key_pubnub = models.CharField(max_length=100, null=True, blank=True)
+    channel_pubnub = models.CharField(max_length=100, null=True, blank=True)
     staff_created = models.ForeignKey(Staff, related_name = 'device_staff_created' ,on_delete=models.PROTECT, null=False, blank=False)
     staff_updated = models.ForeignKey(Staff, related_name = 'device_staff_updated' ,on_delete=models.PROTECT, null=True, blank=True)
     latitude = models.CharField(max_length=100, null=True, blank=True)
@@ -29,7 +33,7 @@ class Device(User):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return str(self.name + " " + self.imei_code)
+        return str(self.name + " " + self.mac_code)
 
     class Meta:
         verbose_name = "Dispositivo"
