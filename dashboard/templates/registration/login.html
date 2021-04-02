@@ -52,6 +52,23 @@
                 <div class="content">
                   <form class="form-validate" method="POST">
                     {% csrf_token %}
+                    <small class="text-danger">
+                      {% if form.errors %}
+                          {% for field in form %}
+                              {% if field.errors %}
+                                  {% for error in field.errors %}
+                                      {{ error|escape }}
+                                  {% endfor %}
+                              {% endif %}
+                          {% endfor %}
+                      
+                          {% if form.non_field_errors%}
+                              {% for error in form.non_field_errors %}
+                                  {{ error|escape }}
+                              {% endfor %}
+                          {% endif %}
+                      {% endif %}
+                  </small>                    
                     <div class="form-group">
                       <input id="login-username" type="text" id="id_username" name="username"  required data-msg="Ingrese nombre de usuario" class="input-material" autocomplete="off">
                       <label for="login-username" class="label-material">User Name</label>
