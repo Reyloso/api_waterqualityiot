@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import admin
-from dashboard.forms import CountryForm, DepartmentForm, CityForm, UserForm
+from dashboard.forms import CountryForm, DepartmentForm, CityForm, UserForm, DeviceForm
 from django.utils import timezone
 from django.utils import timezone as tz
 from datetime import date
@@ -17,6 +17,7 @@ from datetime import datetime
 # Models
 from configurations.models import Country, Department, City
 from users.models import Staff
+from devices.models import Device
 
 # Create your views here.
 @login_required
@@ -546,15 +547,133 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-# def users_list(request):
-# 	context = admin.site.each_context(request)
-# 	context.update({'titulo': 'Usuarios',})
-# 	return render(request,'users/users_list.html', context)
+# listado dispositibos
+class DevicesListView(LoginRequiredMixin, ListView):
+    login_url = '/login/'
+    model = Device
+    template_name = 'devices/devices_list.html'
 
-# def users_new(request):
-# 	context = admin.site.each_context(request)
-# 	context.update({'titulo': 'Nuevo Usuario',})
-# 	return render(request,'users/users_new.html', context)
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            print(action)
+            if action == 'searchdata':
+                data = []
+                for i in Device.objects.filter(deleted_at=None).order_by('-created_at'):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Listado de dispositivos'
+        context['create_url'] = reverse_lazy('devices_create')
+        context['list_url'] = reverse_lazy('devices_list')
+        return context
+
+
+# Creacion de dispositivo
+class DevicesCreateView(LoginRequiredMixin, CreateView):
+    login_url = '/login/'
+    model = Device
+    form_class = DeviceForm
+    template_name = 'devices/new_device.html'
+    success_url = reverse_lazy('devices_list')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de dispositivos'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        return context
+
+
+# Editar Dispositico          
+class DevicesUpdateView(LoginRequiredMixin, UpdateView):
+    model = Device
+    form_class = DeviceForm
+    template_name = 'devices/new_device.html'
+    success_url = reverse_lazy('devices_list')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Edición de un dispositivo'
+        context['list_url'] = self.success_url
+        context['action'] = 'edit'
+        return context
+
+
+
+
+# Eliminar Dispositivo
+class DevicesDeleteView(LoginRequiredMixin, DeleteView):
+    model = Device
+    template_name = 'devices/delete.html'
+    success_url = reverse_lazy('devices_list')
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            self.object.delete()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Eliminación de un Dispositivo'
+        context['list_url'] = self.success_url
+        return context
 
 
 def groups_list(request):
