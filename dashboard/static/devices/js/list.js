@@ -19,7 +19,7 @@ $(function () {
             {"data": "id"},
             {"data": "name"},
             {"data": "mac_code"},
-            {"data": "department"},
+            {"data": "city.name"},
             {"data": "status_device"},
             {"data": "opc"},
         ],

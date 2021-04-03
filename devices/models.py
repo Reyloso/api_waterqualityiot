@@ -50,6 +50,8 @@ class Device(User):
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'groups'])
+        item['city'] = self.city.toJSON()
+
         return item
 
     class Meta:
