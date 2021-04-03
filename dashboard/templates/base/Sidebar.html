@@ -30,8 +30,10 @@
               <ul id="config" class="collapse list-unstyled ">
                 {% url 'country_list' as Url %}  
                 <li  {% if request.path == Url  %} class="active show"  {% else  %}  class="" {% endif %} ><a href="{% url 'country_list'  %}"> <i class="fa fa-globe"></i>Paises</a></li>
-                
-                
+                {% url 'department_list' as Url %}  
+                <li  {% if request.path == Url  %} class="active show"  {% else  %}  class="" {% endif %} ><a href="{% url 'department_list'  %}"> <i class="fa fa-globe"></i>Departamentos</a></li>
+                {% url 'city_list' as Url %}  
+                <li  {% if request.path == Url  %} class="active show"  {% else  %}  class="" {% endif %} ><a href="{% url 'city_list'  %}"> <i class="fa fa-globe"></i>Ciudades</a></li>
                 
               </ul>
             </li>            

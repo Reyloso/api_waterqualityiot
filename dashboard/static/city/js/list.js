@@ -17,7 +17,7 @@ $(function () {
         },
         columns: [
             {"data": "id"},
-            {"data": "country.name"},
+            {"data": "department.name"},
             {"data": "name"},
             {"data": "status"},
             {"data": "opc"},
@@ -29,8 +29,8 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     
-                    var buttons = '<a href="/department/update/'  + row.id + '/" class="btn btn-secondary btn-xs btn-flat">Editar</a> ';
-                    buttons += '<a href="/department/delete/' + row.id + '/" type="button" class="btn btn-danger btn-xs btn-flat">Eliminar</i></a>';
+                    var buttons = '<a href="/city/update/'  + row.id + '/" class="btn btn-secondary btn-xs btn-flat">Editar</a> ';
+                    buttons += '<a href="/city/delete/' + row.id + '/" type="button" class="btn btn-danger btn-xs btn-flat">Eliminar</i></a>';
                     return buttons;
                 }
             },

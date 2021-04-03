@@ -45,6 +45,12 @@ class Department(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         return item
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['country'] = self.country.toJSON()
+        return item
+
     class Meta:
         verbose_name = "Departamento"
         verbose_name_plural = "Departamentos"
@@ -70,6 +76,12 @@ class City(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['department'] = self.department.toJSON()
+        return item
 
     class Meta:
         verbose_name = "Ciudad"

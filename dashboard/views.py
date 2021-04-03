@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import admin
-from dashboard.forms import CountryForm, DepartmentForm
+from dashboard.forms import CountryForm, DepartmentForm, CityForm
 from django.utils import timezone
 from django.utils import timezone as tz
 from datetime import date
@@ -15,7 +15,7 @@ from datetime import date
 from datetime import datetime
 
 # Models
-from configurations.models import Country, Department
+from configurations.models import Country, Department, City
 # Create your views here.
 @login_required
 def home(request):
@@ -274,6 +274,134 @@ class DepartmentDeleteView(LoginRequiredMixin, DeleteView):
         context['title'] = 'Eliminación de un departamento'
         context['list_url'] = self.success_url
         return context
+
+
+
+# Listar ciudad
+class CityListView(LoginRequiredMixin, ListView):
+    login_url = '/login/'
+    model = City
+    template_name = 'configurations/city/list.html'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in City.objects.filter(deleted_at=None).order_by('-created_at'):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+		
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Ciudades'
+        context['create_url'] = reverse_lazy('city_create')
+        return context
+
+
+# Crear ciudad
+class CityCreateView(LoginRequiredMixin, CreateView):
+    login_url = '/login/'
+    model = City
+    form_class = CityForm
+    template_name = 'configurations/country/create.html'
+    success_url = reverse_lazy('city_list')
+    
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Creacion de ciudad '
+        context['action'] = 'add'
+        context['list_url'] = reverse_lazy('city_list')
+        return context
+    
+
+# Eliminar ciudad
+class CityUpdateView(LoginRequiredMixin, UpdateView):
+    login_url = '/login/'
+    model = City
+    form_class = CityForm
+    template_name = 'configurations/country/create.html'
+    success_url = reverse_lazy('city_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Edicion de ciudad '
+        context['action'] = 'edit'
+        context['list_url'] = reverse_lazy('city_list')
+        return context
+
+
+# Eliminar ciudad
+class CityDeleteView(LoginRequiredMixin, DeleteView):
+    login_url = '/login/'
+    model = City
+    template_name = 'configurations/city/delete.html'
+    success_url = reverse_lazy('city_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        # asignamos la instancia a esta variable para luego usarla
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            
+            # aqui la tiene el objeto la instancia
+            instance = self.object
+            instance.deleted_at = timezone.now()
+            instance.save()
+            # self.object.delete()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Eliminación de un departamento'
+        context['list_url'] = self.success_url
+        return context
+
 
 
 def devices_list(request):
