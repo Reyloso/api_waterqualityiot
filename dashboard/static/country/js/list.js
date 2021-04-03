@@ -29,7 +29,7 @@ $(function () {
                 render: function (data, type, row) {
                     
                     var buttons = '<a href="/country/update/'  + row.id + '/" class="btn btn-secondary btn-xs btn-flat">Editar</a> ';
-                    buttons += '<a href="' + row.id + '/" type="button" class="btn btn-danger btn-xs btn-flat">Eliminar</i></a>';
+                    buttons += '<a href="/country/delete/' + row.id + '/" type="button" class="btn btn-danger btn-xs btn-flat">Eliminar</i></a>';
                     return buttons;
                 }
             },
