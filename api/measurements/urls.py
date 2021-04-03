@@ -2,4 +2,4 @@ from django.urls import path
 
 from .views import *
 
-urlpatterns = []
+urlpatterns = [ path('api/measurements/data/create', DataMeasurementeCreatedView.as_view()),]

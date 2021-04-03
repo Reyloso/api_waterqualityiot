@@ -50,12 +50,15 @@ class Measurement(models.Model):
 class Data_measurement(models.Model):
 
     """ modelo para los datos de una medicion """
+
     ph = models.CharField(_('Potencial de hidrogeno'), max_length=100, null=False, blank=False)
     tds = models.CharField(_('Total solidos disueltos'), max_length=100, null=False, blank=False)
     turbidez = models.CharField(_('Turbidez del agua'), max_length=100, null=False, blank=False)
     temperatura = models.CharField(_('Temperatura del agua'), max_length=100, null=False, blank=False)
     conductividad = models.CharField(_('Conductividad electrica'), max_length=100, null=False, blank=False)
     device = models.ForeignKey(Device, on_delete=models.PROTECT, null=False, blank=False)
+    dataJson = models.JSONField(default=dict)
+    time = models.CharField( max_length=100, null=False, blank=False)
     measurement = models.ForeignKey(Measurement, on_delete=models.PROTECT, null=True, blank=True)
     latitude = models.CharField(max_length=100, null=True, blank=True)
     longitude = models.CharField(max_length=100, null=True, blank=True)

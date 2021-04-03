@@ -16,7 +16,7 @@ class data_measurements(admin.ModelAdmin):
 
     list_filter = ('device',)
     search_fields = ('id','device__name', )
-    list_display = ['id','ph','tds','turbidez','temperatura','conductividad','measurement','device','latitude','longitude','created_at', 'updated_at', 'deleted_at']
+    list_display = ['id','ph','tds','turbidez','temperatura','conductividad','measurement','device','time','dataJson','latitude','longitude','created_at', 'updated_at', 'deleted_at']
 
 
     class Meta:
