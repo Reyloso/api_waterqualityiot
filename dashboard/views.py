@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView,UpdateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
@@ -16,7 +16,7 @@ def home(request):
 	context.update({'titulo': 'Inicio',})
 	return render(request,'base/home.html', context)
 
-
+# Listar ciudad
 class CountryListView(ListView):
     model = Country
     template_name = 'configurations/country/list.html'
@@ -45,16 +45,13 @@ class CountryListView(ListView):
         context['create_url'] = reverse_lazy('country_create')
         return context
 
-
+# Crear ciudad
 class CountryCreateView(CreateView):
     model = Country
     form_class = CountryForm
     template_name = 'configurations/country/create.html'
     success_url = reverse_lazy('country_list')
     
-    # def dispatch(self, request, *args, **kwargs):
-    #     return super().dispatch(request, *args, **kwargs)
-     
     def post(self, request, *args, **kwargs):
         data = {}
         try:
@@ -76,6 +73,37 @@ class CountryCreateView(CreateView):
         context['list_url'] = reverse_lazy('country_list')
         return context
     
+
+# Editar ciudad
+class CountryUpdateView(UpdateView):
+    model = Country
+    form_class = CountryForm
+    template_name = 'configurations/country/create.html'
+    success_url = reverse_lazy('country_list')
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Edicion de pais '
+        context['action'] = 'edit'
+        context['list_url'] = reverse_lazy('country_list')
+        return context
 
 
 def devices_list(request):
