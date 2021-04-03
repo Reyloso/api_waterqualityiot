@@ -47,11 +47,11 @@ class CountryListView(ListView):
 		
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Ciudades'
+        context['titulo'] = 'Paises'
         context['create_url'] = reverse_lazy('country_create')
         return context
 
-# Crear ciudad
+# Crear pais
 class CountryCreateView(CreateView):
     model = Country
     form_class = CountryForm
@@ -80,7 +80,7 @@ class CountryCreateView(CreateView):
         return context
     
 
-# Editar ciudad
+# Editar pais
 class CountryUpdateView(UpdateView):
     model = Country
     form_class = CountryForm
@@ -111,7 +111,7 @@ class CountryUpdateView(UpdateView):
         context['list_url'] = reverse_lazy('country_list')
         return context
 
-# Eliminar ciudad
+# Eliminar pais
 class CountryDeleteView(DeleteView):
     model = Country
     template_name = 'configurations/country/delete.html'
@@ -137,7 +137,7 @@ class CountryDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminación de una ciudad'
+        context['title'] = 'Eliminación de un pais'
         context['list_url'] = self.success_url
         return context
 
