@@ -1,0 +1,85 @@
+{% extends "base/base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block contenido %}
+<form method="post" action="." enctype="multipart/form-data">
+<div class="page-header">
+    <div class="container-fluid">
+      <h2 class="h5 no-margin-bottom">{{ titulo }}</h2>
+    </div>
+  </div>
+  <section class="no-padding-top no-padding-bottom">
+    <div class="col-lg-12">
+      <div class="block">
+        <div class="title"><strong>Crear {{ titulo }}</strong></div>
+        <div class="block-body">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="{{ action }}">
+          <form class="form-horizontal">
+            {{forms.errors}}
+            {% for field in form.visible_fields %}
+            <div class="form-group row">
+              <label class="col-sm-3 form-control-label">{{ field.label }}:</label>
+                
+                <div class="col-sm-9">
+                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+              </div>
+            </div>
+        {% endfor %}
+            
+            <div class="line"></div>
+            <div class="form-group row">
+              <div class="col-sm-9 ml-auto">
+                <button class="btn btn-secondary">Volver</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+</form> 
+
+<script type="text/javascript">
+        {% if form.errors %}
+            var errors = '';
+            {% for field in form %}
+                {% for error in field.errors %}
+                    errors += '{{ error }}\n';
+                {% endfor %}
+            {% endfor %}
+            Swal.fire({
+                title: 'Error!',
+                text: errors,
+                icon: 'error'
+            });
+        {% endif %}
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = $(this).serializeArray();
+            $.ajax({
+                url: '{% url 'country_create' %}',
+                type: 'POST',
+                data: parameters,
+                dataType: 'json'
+            }).done(function (data) {
+                console.log(data);
+                if (!data.hasOwnProperty('error')) {
+                    location.href = '{{ list_url }}';
+                    return false;
+                }
+                message_error(data.error);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(textStatus + ': ' + errorThrown);
+            }).always(function (data) {
+
+            });
+        });     
+</script>
+  
+  {% endblock %}
+
+  

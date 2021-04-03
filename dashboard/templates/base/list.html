@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block contenido %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatables_boostrap.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatable_responsive_boostrap.css' %}">
+
+<script type="text/javascript" src= "{% static 'vendor/datatables/datatable_jquery.js' %}" defer > </script>
+
+<script type="text/javascript" src= "{% static 'vendor/datatables/datatable_boostrap.js' %}" defer > </script>
+<script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_boostrap.js' %}" defer > </script>
+<script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_min.js' %}" defer > </script>
+<script type="text/javascript" src= "{% static 'vendor/datatables/tables_datatables.js' %}" defer > </script>
+{% block head_list %}
+
+{% endblock %}
+
+{% endblock %}  
+<div class="page-header">
+    <div class="container-fluid">
+      <h2 class="h5 no-margin-bottom">{{ titulo }}</h2>
+    </div>
+  </div>
+  <section class="no-padding-top no-padding-bottom">
+    <div class="block margin-bottom-sm">
+        
+        <div class="title" style="display: flex;justify-content: space-between;"><strong>Tabla De {{ titulo }}</strong>
+        {% block buttons_list %}
+        <a href="{{ create_url }}" class="btn btn-success"><i class="fa fa-plus-circle"></i>  Nuevo</a> </div>
+        {% endblock %}
+        <div class="table-responsive"> 
+          <table id="data" style="width: 100%;" class="table">
+            <thead>
+                {% block columns %}
+
+                {% endblock %}
+            </thead>
+            <tbody>
+                {% block rows %}
+
+                {% endblock %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+  </section>
+  
+ 
+{% block lib %} 
+
+  {% endblock %}  
+
+
+
+
+<!-- {% block javascript %}
+
+
+<script type="text/javascript">
+
+        $(document).ready(function(){
+            $('#datatable1').DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        }
+    });
+        });
+</script>
+{% endblock %}
+  -->
+{% endblock %}  

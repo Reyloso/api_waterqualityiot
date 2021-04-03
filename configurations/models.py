@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from django.forms import model_to_dict
 # Create your models here.
 # models type departament
 class Country(models.Model):
@@ -13,6 +13,10 @@ class Country(models.Model):
     updated_at = models.DateTimeField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+        
     class Meta:
         verbose_name = "Pais"
         verbose_name_plural = "Paises"

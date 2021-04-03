@@ -23,4 +23,8 @@ urlpatterns = [
     # path('mis_posts', views.mis_posts, name='mis_posts'),
     # path('categorias', views.categorias, name='categorias'),
     # path('detalle_post/<int:pk>', views.detalle_post),
+
+    # Country
+    path('country/list', views.CountryListView.as_view(), name='country_list'),
+    path('country/add/', views.CountryCreateView.as_view(), name='country_create'),
 ]
