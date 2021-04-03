@@ -1,0 +1,82 @@
+{% extends "base/base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block contenido %}
+<form method="post" action="." enctype="multipart/form-data">
+<div class="page-header">
+    <div class="container-fluid">
+      <h2 class="h5 no-margin-bottom">{{ titulo }}</h2>
+    </div>
+  </div>
+  <section class="no-padding-top no-padding-bottom">
+    <div class="col-lg-12">
+      <div class="block">
+        <div class="title"><strong>Eliminar {{ titulo }}</strong></div>
+        <div class="block-body">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="{{ action }}">
+          {% if form.errors %}
+          <div class="alert alert-danger alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+              <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
+              <ul>
+                  {% for field in form %}
+                      {% for error in field.errors %}
+                          <li>{{ error }}</li>
+                      {% endfor %}
+                  {% endfor %}
+              </ul>
+          </div>
+      {% endif %}
+          <form class="form-horizontal">
+            {{forms.errors}}
+
+
+            <div class="alert alert-danger alert-dismissible">
+                <h5><i class="fa fa-exclamation-triangle"></i> Notificación!</h5>
+                ¿Estas seguro de eliminar el registro N°{{ object.id }}?
+            </div>
+            
+            <div class="line"></div>
+            <div class="form-group row">
+              <div class="col-sm-9 ml-auto">
+                <button href="{{ list_url }}" class="btn btn-secondary">Volver</button>
+                <button type="submit" class="btn btn-success">Aceptar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+</form> 
+
+<script type="text/javascript">
+
+    $('form').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = $(this).serializeArray();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json'
+        }).done(function (data) {
+            console.log(data);
+            if (!data.hasOwnProperty('error')) {
+                location.href = '{{ list_url }}';
+                return false;
+            }
+            message_error(data.error);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            alert(textStatus + ': ' + errorThrown);
+        }).always(function (data) {
+
+        });
+    });     
+</script>
+  
+  {% endblock %}
+
+  
