@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import admin
-from dashboard.forms import CountryForm, DepartmentForm, CityForm
+from dashboard.forms import CountryForm, DepartmentForm, CityForm, UserForm
 from django.utils import timezone
 from django.utils import timezone as tz
 from datetime import date
@@ -16,6 +16,8 @@ from datetime import datetime
 
 # Models
 from configurations.models import Country, Department, City
+from users.models import Staff
+
 # Create your views here.
 @login_required
 def home(request):
@@ -415,16 +417,144 @@ def devices_new(request):
 	context.update({'titulo': 'Nuevo Dispositivo',})
 	return render(request,'devices/new_device.html', context)
 
+# listado de usuarios Staff
+class users_list(LoginRequiredMixin, ListView):
+    login_url = '/login/'
+    model = Staff
+    template_name = 'users/users_list.html'
 
-def users_list(request):
-	context = admin.site.each_context(request)
-	context.update({'titulo': 'Usuarios',})
-	return render(request,'users/users_list.html', context)
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
-def users_new(request):
-	context = admin.site.each_context(request)
-	context.update({'titulo': 'Nuevo Usuario',})
-	return render(request,'users/users_new.html', context)
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            print(action)
+            if action == 'searchdata':
+                data = []
+                for i in Staff.objects.filter(deleted_at=None).order_by('-created_at'):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Listado de Usuarios'
+        context['create_url'] = reverse_lazy('user_create')
+        context['list_url'] = reverse_lazy('user_list')
+        return context
+
+
+# Creacion de usuarios Staff
+class Users_new(LoginRequiredMixin, CreateView):
+    login_url = '/login/'
+    model = Staff
+    form_class = UserForm
+    template_name = 'users/users_new.html'
+    success_url = reverse_lazy('user_list')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de un Usuario'
+        context['entity'] = 'Usuarios'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        return context
+
+
+# Editar Usuario Staff         
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    model = Staff
+    form_class = UserForm
+    template_name = 'users/users_new.html'
+    success_url = reverse_lazy('user_list')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Edición de un Usuario'
+        context['entity'] = 'Usuarios'
+        context['list_url'] = self.success_url
+        context['action'] = 'edit'
+        return context
+
+#Eliminar usaurio
+class UserDeleteView(LoginRequiredMixin, DeleteView):
+    model = Staff
+    template_name = 'users/users_delete.html'
+    success_url = reverse_lazy('user_list')
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            self.object.delete()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Eliminación de un Usuario'
+        context['entity'] = 'Usuarios'
+        context['list_url'] = self.success_url
+        return context
+
+
+# def users_list(request):
+# 	context = admin.site.each_context(request)
+# 	context.update({'titulo': 'Usuarios',})
+# 	return render(request,'users/users_list.html', context)
+
+# def users_new(request):
+# 	context = admin.site.each_context(request)
+# 	context.update({'titulo': 'Nuevo Usuario',})
+# 	return render(request,'users/users_new.html', context)
 
 
 def groups_list(request):
