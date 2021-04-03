@@ -19,8 +19,8 @@
             <!-- <li ><a href="forms.html"> <i class="icon-padnote"></i>Reportes </a></li> -->
             <li ><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-users"></i>Usuarios </a>
               <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
-                {% url 'user-list' as Url %}  
-                <li  {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %} ><a href="{% url 'user-list'  %}"> <i class="fa fa-user-o"></i>Usuarios</a></li>
+                {% url 'user_list' as Url %}  
+                <li  {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %} ><a href="{% url 'user_list'  %}"> <i class="fa fa-user-o"></i>Usuarios</a></li>
                 {% url 'groups-list' as Url %}  
                 <li {% if request.path == Url  %} class="active"  {% else  %}  class="" {% endif %}><a  href="{% url 'groups-list'  %}"> <i class="fa fa-users"></i>Grupos</a></li>
               </ul>

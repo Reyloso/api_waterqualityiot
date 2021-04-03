@@ -15,14 +15,14 @@ urlpatterns = [
     path('measurement/', views.device_list_measurement, name='measurement-select'),
     path('measurement/view', views.measurement_view, name='measurement-view'),
 
-    path('users/', views.users_list, name='user-list'),
-    path('users/new', views.users_new, name='user-new'),
+    # Usuarios
+    path('users/', views.users_list.as_view(), name='user_list'),
+    path('users/add/', views.Users_new.as_view(), name='user_create'),
+    path('users/update/<int:pk>/', views.UserUpdateView.as_view(), name='users_update'),
+    path('users/delete/<int:pk>/', views.UserDeleteView.as_view(), name='users_delete'),
 
     path('group/', views.groups_list, name='groups-list'),
     path('group/new', views.group_new, name='group-new'),
-    # path('mis_posts', views.mis_posts, name='mis_posts'),
-    # path('categorias', views.categorias, name='categorias'),
-    # path('detalle_post/<int:pk>', views.detalle_post),
 
     # Country
     path('country/list', views.CountryListView.as_view(), name='country_list'),

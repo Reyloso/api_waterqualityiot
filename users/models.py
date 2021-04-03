@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist,ValidationError
 from django.contrib.auth.models import User, Group
 from django.core.validators import MaxValueValidator, MinValueValidator
 from configurations.models import (Country, Department, City)
+from django.forms import model_to_dict
 # Create your models here.
 
 class UserManagers(BaseUserManager):
@@ -61,6 +62,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
     class Meta:
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"
@@ -99,6 +104,15 @@ class Staff(User):
     updated_at = models.DateTimeField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
     
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login'])
+        if self.last_login:
+            item['last_login'] = self.last_login.strftime('%Y-%m-%d')
+        item['date_joined'] = self.date_joined.strftime('%Y-%m-%d')
+        item['full_name'] = self.get_full_name()
+        item['groups'] = [{'id': g.id, 'name': g.name} for g in self.groups.all()]
+        return item
+
 
     def full_name(self):
         return str(self.name + " " + self.first_surname)
