@@ -29,4 +29,12 @@ urlpatterns = [
     path('country/add/', views.CountryCreateView.as_view(), name='country_create'),
     path('country/update/<int:pk>/', views.CountryUpdateView.as_view(), name='country_update'),
     path('country/delete/<int:pk>/', views.CountryDeleteView.as_view(), name='country_delete'),
+
+    # Departamentos
+    path('department/list', views.DepartmentListView.as_view(), name='department_list'),    
+    path('department/add/', views.DepartmentCreateView.as_view(), name='department_create'),
+    path('department/update/<int:pk>/', views.DepartmentUpdateView.as_view(), name='department_update'),
+    path('department/delete/<int:pk>/', views.DepartmentDeleteView.as_view(), name='department_delete'),
+
+
 ]
