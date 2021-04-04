@@ -95,8 +95,7 @@
               'name': document.getElementById('nombre').value,
               'permissions': $("#permissions").val(),
           }
-          console.log("1",this.data)
-          put('roles-detalle/'+ "{{grupo.id}}", this.data,"{{ csrf_token }}").then(result=>{
+          put('/roles-detalle/'+ "{{grupo.id}}", this.data,"{{ csrf_token }}").then(result=>{
             location.href="{% url 'group_list' %}"
               }).catch(function (error) {
               console.log(error)
