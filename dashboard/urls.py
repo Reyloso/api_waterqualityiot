@@ -16,9 +16,17 @@ urlpatterns = [
     path('devices/update/<int:pk>/', views.DevicesUpdateView.as_view(), name='devices_update'),
     path('devices/delete/<int:pk>/', views.DevicesDeleteView.as_view(), name='devices_delete'),
 
+
+    # Mediciones
+    path('measurement/list', views.MeasurementsListView.as_view(), name='measurements_list'),
+    path('measurement/add/', views.MeasurementsCreateView.as_view(), name='measurement_create'),
+    path('measurement/update/<int:pk>/', views.MeasurementsUpdateView.as_view(), name='measurement_update'),
+    path('measurement/delete/<int:pk>/', views.MeasurementsDeleteView.as_view(), name='measurement_delete'),
+
     path('devices/new', views.devices_new, name='devices-new'),
 
     path('measurement/', views.device_list_measurement, name='measurement-select'),
+
     path('measurement/view', views.measurement_view, name='measurement-view'),
 
     # Usuarios

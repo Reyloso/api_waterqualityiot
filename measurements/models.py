@@ -4,6 +4,10 @@ from django.utils import timezone
 from devices.models import (Device)
 from users.models import (Staff, User)
 from configurations.models import (Country, Department, City)
+# Auditoria de modelos 
+from crum import get_current_user
+
+from django.forms import model_to_dict
 
 # Create your models here.
 class Measurement(models.Model):
@@ -31,6 +35,21 @@ class Measurement(models.Model):
     updated_at = models.DateTimeField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
     finished_at = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user is not None:
+            if  not self.pk:
+                self.staff_created = user
+            else:                
+                self.staff_updated = user
+        super(Measurement, self).save(*args, **kwargs)   
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['city'] = self.city.toJSON()
+
+        return item
 
     class Meta:
         verbose_name = "Medicion"

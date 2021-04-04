@@ -3,7 +3,7 @@ from django.utils import timezone
 from users.models import (User, Staff)
 from configurations.models import (Country, Department, City)
 from django.db.models.signals import post_save
-# autoditoria 
+# Auditoria de modelos 
 from crum import get_current_user
 
 from django.forms import model_to_dict

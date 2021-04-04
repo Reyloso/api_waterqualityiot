@@ -6,7 +6,7 @@ from django.forms import ModelForm
 from configurations.models import Country, Department, City
 from users.models import Staff, User
 from devices.models import Device
-
+from measurements.models import Measurement
 class UserForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -127,6 +127,38 @@ class DeviceForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
+
+
+class MeasurementsForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Measurement
+        fields = 'name','device','country','department','city','status'
+        widgets = {
+            'name': forms.TextInput(
+                attrs={
+                    'placeholder': 'Ingrese nombre',
+                }
+            ),
+ 
+    }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data        
 
 
 

@@ -18,9 +18,9 @@ $(function () {
         columns: [
             {"data": "id"},
             {"data": "name"},
-            {"data": "mac_code"},
+            {"data": "device"},
             {"data": "city.name"},
-            {"data": "status_device"},
+            {"data": "status"},
             {"data": "opc"},
         ],
         columnDefs: [
@@ -30,18 +30,10 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     
-                    var buttons = '<a href="/devices/update/'  + row.id + '/" class="btn btn-secondary btn-xs btn-flat">Editar</a> ';
-                    buttons += '<a href="/devices/delete/' + row.id + '/" type="button" class="btn btn-danger btn-xs btn-flat">Eliminar</i></a>';
+                    var buttons = '<a href="/measurement/update/'  + row.id + '/" class="btn btn-secondary btn-xs btn-flat">Editar</a> ';
+                    buttons += '<a href="/measurement/delete/' + row.id + '/" type="button" class="btn btn-danger btn-xs btn-flat">Eliminar</i></a>';
                     return buttons;
                 }
-            } ,
-            {"targets":[-2],
-            "className": "text-center",
-            "data":"estado",
-            "render": function(data,type,full,meta){ if(data=='Activo'){
-                return "<span class='badge badge-success font-weight-bold'>ACTIVO</span>"  
-                }else{ return "<span class='badge badge-danger font-weight-bold'>INACTIVO</span>"  }
-            }
             }      
         ],
         initComplete: function (settings, json) {

@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import admin
-from dashboard.forms import CountryForm, DepartmentForm, CityForm, UserForm, DeviceForm
+from dashboard.forms import CountryForm, DepartmentForm, CityForm, UserForm, DeviceForm,MeasurementsForm
 from django.utils import timezone
 from django.utils import timezone as tz
 from datetime import date
@@ -18,6 +18,7 @@ from datetime import datetime
 from configurations.models import Country, Department, City
 from users.models import Staff
 from devices.models import Device
+from measurements.models import Measurement
 
 # Create your views here.
 @login_required
@@ -341,7 +342,7 @@ class CityCreateView(LoginRequiredMixin, CreateView):
         return context
     
 
-# Eliminar ciudad
+# Editar ciudad
 class CityUpdateView(LoginRequiredMixin, UpdateView):
     login_url = '/login/'
     model = City
@@ -401,7 +402,7 @@ class CityDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminación de un departamento'
+        context['titulo'] = 'Eliminación de un departamento'
         context['list_url'] = self.success_url
         return context
 
@@ -479,7 +480,7 @@ class Users_new(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Creación de un Usuario'
+        context['titulo'] = 'Creación de un Usuario'
         context['entity'] = 'Usuarios'
         context['list_url'] = self.success_url
         context['action'] = 'add'
@@ -514,7 +515,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Edición de un Usuario'
+        context['titulo'] = 'Edición de un Usuario'
         context['entity'] = 'Usuarios'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
@@ -541,13 +542,13 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminación de un Usuario'
+        context['titulo'] = 'Eliminación de un Usuario'
         context['entity'] = 'Usuarios'
         context['list_url'] = self.success_url
         return context
 
 
-# listado dispositibos
+# listado dispositivos
 class DevicesListView(LoginRequiredMixin, ListView):
     login_url = '/login/'
     model = Device
@@ -561,7 +562,6 @@ class DevicesListView(LoginRequiredMixin, ListView):
         data = {}
         try:
             action = request.POST['action']
-            print(action)
             if action == 'searchdata':
                 data = []
                 for i in Device.objects.filter(deleted_at=None).order_by('-created_at'):
@@ -608,13 +608,13 @@ class DevicesCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Creación de dispositivos'
+        context['titulo'] = 'Creación de dispositivos'
         context['list_url'] = self.success_url
         context['action'] = 'add'
         return context
 
 
-# Editar Dispositico          
+# Editar dispositivo          
 class DevicesUpdateView(LoginRequiredMixin, UpdateView):
     model = Device
     form_class = DeviceForm
@@ -642,12 +642,10 @@ class DevicesUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Edición de un dispositivo'
+        context['titulo'] = 'Edición de un dispositivo'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         return context
-
-
 
 
 # Eliminar Dispositivo
@@ -671,9 +669,146 @@ class DevicesDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminación de un Dispositivo'
+        context['titulo'] = 'Eliminación de un Dispositivo'
         context['list_url'] = self.success_url
         return context
+
+
+# listado Mediciones
+class MeasurementsListView(LoginRequiredMixin, ListView):
+    login_url = '/login/'
+    model = Measurement
+    template_name = 'measurements/list_measurement.html'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Measurement.objects.filter(deleted_at=None).order_by('-created_at'):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Listado de mediciones'
+        context['create_url'] = reverse_lazy('measurement_create')
+        context['list_url'] = reverse_lazy('measurements_list')
+        return context
+
+
+
+# Creacion de Mediciones
+class MeasurementsCreateView(LoginRequiredMixin, CreateView):
+    login_url = '/login/'
+    model = Measurement
+    form_class = MeasurementsForm
+    template_name = 'measurements/new_measurements.html'
+    success_url = reverse_lazy('measurements_list')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Creación de mediciones'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        return context
+
+
+
+# Editar MEdicion          
+class MeasurementsUpdateView(LoginRequiredMixin, UpdateView):
+    model = Measurement
+    form_class = MeasurementsForm
+    template_name = 'measurements/new_measurements.html'
+    success_url = reverse_lazy('measurements_list')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Edición de una mediciono'
+        context['list_url'] = self.success_url
+        context['action'] = 'edit'
+        return context
+
+
+
+# Eliminar departamento
+class MeasurementsDeleteView(LoginRequiredMixin, DeleteView):
+    login_url = '/login/'
+    model = Measurement
+    template_name = 'measurements/delete_measurements.html'
+    success_url = reverse_lazy('measurements_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        # asignamos la instancia a esta variable para luego usarla
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            
+            # aqui la tiene el objeto la instancia
+            instance = self.object
+            instance.deleted_at = timezone.now()
+            instance.save()
+            # self.object.delete()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Eliminación de una medicion'
+        context['list_url'] = self.success_url
+        return context
+
+
 
 
 def groups_list(request):
