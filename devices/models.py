@@ -3,6 +3,10 @@ from django.utils import timezone
 from users.models import (User, Staff)
 from configurations.models import (Country, Department, City)
 from django.db.models.signals import post_save
+# autoditoria 
+from crum import get_current_user
+
+from django.forms import model_to_dict
 # Create your models here.
 
 
@@ -24,8 +28,8 @@ class Device(User):
     suscribe_key_pubnub = models.CharField(max_length=100, null=True, blank=True)
     uuid_key_pubnub = models.CharField(max_length=100, null=True, blank=True)
     channel_pubnub = models.CharField(max_length=100, null=True, blank=True)
-    staff_created = models.ForeignKey(Staff, related_name = 'device_staff_created' ,on_delete=models.PROTECT, null=False, blank=False)
-    staff_updated = models.ForeignKey(Staff, related_name = 'device_staff_updated' ,on_delete=models.PROTECT, null=True, blank=True)
+    staff_created = models.ForeignKey(User, related_name = 'device_staff_created' ,on_delete=models.PROTECT, null=True, blank=True)
+    staff_updated = models.ForeignKey(User, related_name = 'device_staff_updated' ,on_delete=models.PROTECT, null=True, blank=True)
     latitude = models.CharField(max_length=100, null=True, blank=True)
     longitude = models.CharField(max_length=100, null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -34,6 +38,21 @@ class Device(User):
 
     def __str__(self):
         return str(self.name + " " + self.mac_code)
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user is not None:
+            if  not self.pk:
+                self.staff_created = user
+            else:                
+                self.staff_updated = user
+        super(Device, self).save(*args, **kwargs)        
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'groups'])
+        item['city'] = self.city.toJSON()
+
+        return item
 
     class Meta:
         verbose_name = "Dispositivo"

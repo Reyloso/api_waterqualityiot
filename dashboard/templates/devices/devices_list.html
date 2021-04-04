@@ -1,75 +1,27 @@
-{% extends "base/base.html" %}
+{% extends 'base/list.html' %}
 {% load static %}
-{% block contenido %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/datatables_boostrap.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/datatable_responsive_boostrap.css' %}">
-  
-<div class="page-header">
-    <div class="container-fluid">
-      <h2 class="h5 no-margin-bottom">{{ titulo }}</h2>
-    </div>
-  </div>
-  <section class="no-padding-top no-padding-bottom">
-    <div class="block margin-bottom-sm">
-        
-        <div class="title" style="display: flex;justify-content: space-between;"><strong>Tabla De {{ titulo }}</strong>
-        <a href="{% url 'devices-new'  %}" class="btn btn-success"><i class="fa fa-plus-circle"></i>  Nuevo</a> </div>
-        <div class="table-responsive"> 
-          <table id="datatable1" style="width: 100%;" class="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Nombre</th>
-                <th>Mac</th>
-                <th>Ubicación</th>
-                <th>Estado</th>
-                <th>Opciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Medidor 1</td>
-                <td>00:1e:c2:9e:28:6b</td>
-                <td>Monteria</td>
-                <td>Activo</td>
-                <td><input type="submit" value="Editar" class="btn btn-secondary">
-                    <input type="submit" value="Eliminar" class="btn btn-danger">
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Medidor 2</td>
-                <td>00:2e:c5:7a:28:7c</td>
-                <td>Cereté</td>
-                <td>Activo</td>
-                <td><input type="submit" value="Editar" class="btn btn-secondary">
-                    <input type="submit" value="Eliminar" class="btn btn-danger">
-              </tr>
-             
-            </tbody>
-          </table>
-        </div>
+{% block head_list %}
+<script src="{% static 'devices/js/list.js' %}"></script>
+{% endblock %}
 
-      </div>
-  </section>
-  
- 
- 
-  <script  type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
-  <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_jquery.js' %}" defer > </script>
+   
 
-  <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_boostrap.js' %}" defer > </script>
-  <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_boostrap.js' %}" defer > </script>
-  <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_min.js' %}" defer > </script>
-  <script type="text/javascript" src= "{% static 'vendor/datatables/tables_datatables.js' %}" defer > </script>
-<script type="text/javascript">
-        $(document).ready(function(){
-            $('#datatable1').DataTable({
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-        }
-    });
-        });
-</script>
-  
-  {% endblock %}
+
+{% block columns %}
+    <tr>
+        <th scope="col" style="width: 10%;">Nro</th>
+        <th scope="col" style="width: 30%;">Nombre</th>
+        <th scope="col" style="width: 20%;">Mac</th>
+        <th scope="col" style="width: 10%;">Ubicacion</th>
+        <th scope="col" style="width: 10%;">Estado</th>
+        <th scope="col" style="width: 20%;">Opciones</th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

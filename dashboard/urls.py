@@ -9,7 +9,13 @@ urlpatterns = [
           
     path('accounts/', include('django.contrib.auth.urls')), # new
     path('', views.home, name='home'),
-    path('devices/', views.devices_list, name='devices-list'),
+
+    # Dispositivos
+    path('devices/list', views.DevicesListView.as_view(), name='devices_list'),    
+    path('devices/add/', views.DevicesCreateView.as_view(), name='devices_create'),
+    path('devices/update/<int:pk>/', views.DevicesUpdateView.as_view(), name='devices_update'),
+    path('devices/delete/<int:pk>/', views.DevicesDeleteView.as_view(), name='devices_delete'),
+
     path('devices/new', views.devices_new, name='devices-new'),
 
     path('measurement/', views.device_list_measurement, name='measurement-select'),

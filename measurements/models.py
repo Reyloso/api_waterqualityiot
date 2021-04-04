@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from devices.models import (Device)
-from users.models import (Staff)
+from users.models import (Staff, User)
 from configurations.models import (Country, Department, City)
 
 # Create your models here.
@@ -22,8 +22,8 @@ class Measurement(models.Model):
     status = models.CharField(max_length=20, choices=status_types, default='Activa', null=False, blank=False)
     name = models.CharField(max_length=45, null=False, blank=False)
     device = models.ForeignKey(Device, on_delete=models.PROTECT, null=False, blank=False)
-    staff_created = models.ForeignKey(Staff, related_name='mision_staff_created', on_delete=models.PROTECT, null=False, blank=False)
-    staff_updated = models.ForeignKey(Staff, related_name='mision_staff_updated', on_delete=models.PROTECT, null=True, blank=True)
+    staff_created = models.ForeignKey(User, related_name='mision_staff_created', on_delete=models.PROTECT, null=False, blank=False)
+    staff_updated = models.ForeignKey(User, related_name='mision_staff_updated', on_delete=models.PROTECT, null=True, blank=True)
     staff_finished = models.ForeignKey(Staff, related_name='mision_staff_finished', on_delete=models.PROTECT, null=True, blank=True)
     latitude = models.CharField(max_length=100, null=True, blank=True)
     longitude = models.CharField(max_length=100, null=True, blank=True)
