@@ -107,19 +107,24 @@
         </div>
         <div class="col-lg-6">
             <div class="drills-chart block">
-              <canvas id="temperaturamonteria"></canvas>
+              <canvas id="temperaturagrafica"></canvas>
             </div>
           </div>
         <div class="col-lg-6">
             <div class="drills-chart block">
-              <canvas id="phmonteria"></canvas>
+              <canvas id="phGrafica"></canvas>
             </div>
           </div>
         <div class="col-lg-6">
             <div class="drills-chart block">
-              <canvas id="turbidez"></canvas>
+              <canvas id="graficaTds"></canvas>
             </div>
-          </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="drills-chart block">
+              <canvas id="graficaTurbidez"></canvas>
+            </div>
+        </div>
       </div>
     </div>
   </section>
@@ -249,8 +254,11 @@
                   obj.arraydataconductividad.push(mediciones[key].conductividad);
                   obj.arradataTime.push(mediciones[key].time);
                 }
-                obj.graficaTemp(mediciones)
-                // obj.graficaHum(data.humedad)
+                obj.graficaTemp()
+                obj.graficaconductividad()
+                obj.graficaPh()
+                obj.graficaTds()
+                obj.graficaTurbidez()
                 // obj.graficaGas(data.gas)
                 // obj.graficaCon(data.concentracion)
                 // console.log("liiasjdas ",obj.mediciones_list)
@@ -327,8 +335,8 @@
         //         console.log(error)
         //       })
         // },
-        graficaTemp(data){
-          var BARCHARTEXMPLE  = $('#conductividadGrafica');
+        graficaTemp(){
+          var BARCHARTEXMPLE  = $('#temperaturagrafica');
           var barChartExample = new Chart(BARCHARTEXMPLE, {
           type: 'line',
           options: {
@@ -385,187 +393,244 @@
               ]
           }
       });
-        },
-        // graficaHum(data){
-        //     var date = data
-        //     var graficatem = Highcharts.chart('graficaHumedad', {
-        //         chart: {
-        //             type: 'spline',
-        //             scrollablePlotArea: {
-        //                 minWidth: 600,
-        //                 scrollPositionX: 1
-        //             }
-        //         },
-        //         title: {
-        //             text: 'Humedad'
-        //         },
-        //         subtitle: {
-        //             text: 'Calidad Del Aire V 2.0'
-        //         },
-        //         xAxis: {
-        //             type: 'datetime',
-        //             labels: {
-        //                 overflow: 'justify'
-        //             }
-        //         },
-        //         yAxis: {
-        //             title: {
-        //                 text: '%'
-        //             },
-        //             minorGridLineWidth: 0,
-        //             gridLineWidth: 0,
-        //             alternateGridColor: null,
-        //             plotBands: []
-        //         },
-        //         tooltip: {
-        //             valueSuffix: ' %'
-        //         },
-        //         plotOptions: {
-        //             spline: {
-        //                 lineWidth: 4,
-        //                 states: {
-        //                     hover: {
-        //                         lineWidth: 5
-        //                     }
-        //                 },
-        //                 marker: {
-        //                     enabled: false
-        //                 },
-        //                 pointInterval: 1000, // one hour
-        //                 pointStart: Date.UTC(2018, 1, 13, 0, 0, 0)
-        //             }
-        //         },
-        //         series: [{
-        //             name: 'Humedad',
-        //             data: date
-        //         }],
-        //         navigation: {
-        //             menuItemStyle: {
-        //                 fontSize: '10px'
-        //             }
-        //         }
-        //     });
-        // },
-        // graficaGas(data){
-        //     var date = data
-        //     var graficatem = Highcharts.chart('graficaGas', {
-        //         chart: {
-        //             type: 'spline',
-        //             scrollablePlotArea: {
-        //                 minWidth: 600,
-        //                 scrollPositionX: 1
-        //             }
-        //         },
-        //         title: {
-        //             text: 'GAS'
-        //         },
-        //         subtitle: {
-        //             text: 'Calidad Del Aire V 2.0'
-        //         },
-        //         xAxis: {
-        //             type: 'datetime',
-        //             labels: {
-        //                 overflow: 'justify'
-        //             }
-        //         },
-        //         yAxis: {
-        //             title: {
-        //                 text: 'PPM'
-        //             },
-        //             minorGridLineWidth: 0,
-        //             gridLineWidth: 0,
-        //             alternateGridColor: null,
-        //             plotBands: []
-        //         },
-        //         tooltip: {
-        //             valueSuffix: 'PPM'
-        //         },
-        //         plotOptions: {
-        //             spline: {
-        //                 lineWidth: 4,
-        //                 states: {
-        //                     hover: {
-        //                         lineWidth: 5
-        //                     }
-        //                 },
-        //                 marker: {
-        //                     enabled: false
-        //                 },
-        //                 pointInterval: 1000, // one hour
-        //                 pointStart: Date.UTC(2018, 1, 13, 0, 0, 0)
-        //             }
-        //         },
-        //         series: [{
-        //             name: 'GAS',
-        //             data: date
-        //         }],
-        //         navigation: {
-        //             menuItemStyle: {
-        //                 fontSize: '10px'
-        //             }
-        //         }
-        //     });
-        // },
-        // graficaCon(data){
-        //     var date = data
-        //     var graficatem = Highcharts.chart('graficaCon', {
-        //         chart: {
-        //             type: 'spline',
-        //             scrollablePlotArea: {
-        //                 minWidth: 600,
-        //                 scrollPositionX: 1
-        //             }
-        //         },
-        //         title: {
-        //             text: 'CONCENTRACIÓN'
-        //         },
-        //         subtitle: {
-        //             text: 'Calidad Del Aire V 2.0'
-        //         },
-        //         xAxis: {
-        //             type: 'datetime',
-        //             labels: {
-        //                 overflow: 'justify'
-        //             }
-        //         },
-        //         yAxis: {
-        //             title: {
-        //                 text: 'PPM'
-        //             },
-        //             minorGridLineWidth: 0,
-        //             gridLineWidth: 0,
-        //             alternateGridColor: null,
-        //             plotBands: []
-        //         },
-        //         tooltip: {
-        //             valueSuffix: 'PPM'
-        //         },
-        //         plotOptions: {
-        //             spline: {
-        //                 lineWidth: 4,
-        //                 states: {
-        //                     hover: {
-        //                         lineWidth: 5
-        //                     }
-        //                 },
-        //                 marker: {
-        //                     enabled: false
-        //                 },
-        //                 pointInterval: 1000, // one hour
-        //                 pointStart: Date.UTC(2018, 1, 13, 0, 0, 0)
-        //             }
-        //         },
-        //         series: [{
-        //             name: 'CONCENTRACIÓN',
-        //             data: date
-        //         }],
-        //         navigation: {
-        //             menuItemStyle: {
-        //                 fontSize: '10px'
-        //             }
-        //         }
-        //     });
-        // },
+      },
+      graficaconductividad(){
+          var BARCHARTEXMPLE  = $('#conductividadGrafica');
+          var barChartExample = new Chart(BARCHARTEXMPLE, {
+          type: 'line',
+          options: {
+              scales: {
+                  xAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }],
+                  yAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }]
+              },
+          },
+          data: {
+              labels: obj.arradataTime,
+              datasets: [
+                  {
+                      label: "Conductividad",
+                      backgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      hoverBackgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      borderColor: [
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)"
+                      ],
+                      borderWidth: 1,
+                      data: this.arraydataconductividad,
+                  },
+              ]
+          }
+      });
+      },
+      graficaPh(){
+          var BARCHARTEXMPLE  = $('#phGrafica');
+          var barChartExample = new Chart(BARCHARTEXMPLE, {
+          type: 'line',
+          options: {
+              scales: {
+                  xAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }],
+                  yAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }]
+              },
+          },
+          data: {
+              labels: obj.arradataTime,
+              datasets: [
+                  {
+                      label: "Ph",
+                      backgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      hoverBackgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      borderColor: [
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)"
+                      ],
+                      borderWidth: 1,
+                      data: this.arraydataph,
+                  },
+              ]
+          }
+      });
+      },
+      graficaTds(){
+          var BARCHARTEXMPLE  = $('#graficaTds');
+          var barChartExample = new Chart(BARCHARTEXMPLE, {
+          type: 'line',
+          options: {
+              scales: {
+                  xAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }],
+                  yAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }]
+              },
+          },
+          data: {
+              labels: obj.arradataTime,
+              datasets: [
+                  {
+                      label: "Total Solidos Disueltos",
+                      backgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      hoverBackgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      borderColor: [
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)"
+                      ],
+                      borderWidth: 1,
+                      data: this.arraydatatds,
+                  },
+              ]
+          }
+      });
+      },
+      graficaTurbidez(){
+          var BARCHARTEXMPLE  = $('#graficaTurbidez');
+          var barChartExample = new Chart(BARCHARTEXMPLE, {
+          type: 'line',
+          options: {
+              scales: {
+                  xAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }],
+                  yAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }]
+              },
+          },
+          data: {
+              labels: obj.arradataTime,
+              datasets: [
+                  {
+                      label: "Turbidez",
+                      backgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      hoverBackgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      borderColor: [
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)"
+                      ],
+                      borderWidth: 1,
+                      data: this.arraydataturbidez,
+                  },
+              ]
+          }
+      });
+      },
+        
 
       }
     })
