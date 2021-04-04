@@ -312,29 +312,7 @@
         //         console.log(error)
         //     });
         // },
-        // changestatus(){
-        //     obj = this
-        //     var m = {}
-        //     // console.log(obj.mision.estadoBool)
-        //     if(obj.mision.estadoBool==true){
-        //         obj.mision.estadoBool=false
-        //         obj.mision.estado = "Inactiva"
-        //         m = {
-        //             estado:false
-        //         }
-        //     }else{
-        //         obj.mision.estado = "Activa"
-        //         obj.mision.estadoBool=true
-        //         m = {
-        //             estado:true
-        //         }
-        //     }
-        //     axios.patch("misiones/" + obj.mision.id, m, {headers: {"X-CSRFToken": obj.token,'Content-Type': 'application/json' }
-        //       }).then(function (response) {
-        //       }).catch(function (error) {
-        //         console.log(error)
-        //       })
-        // },
+       
         graficaTemp(){
           var BARCHARTEXMPLE  = $('#temperaturagrafica');
           var barChartExample = new Chart(BARCHARTEXMPLE, {
@@ -356,7 +334,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime,
+              labels: obj.arradataTime.reverse(),
               datasets: [
                   {
                       label: "Temperatura",
@@ -388,7 +366,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydatatemp,
+                      data: this.arraydatatemp.reverse(),
                   },
               ]
           }
@@ -415,7 +393,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime,
+              labels: obj.arradataTime.reverse(),
               datasets: [
                   {
                       label: "Conductividad",
@@ -447,7 +425,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydataconductividad,
+                      data: this.arraydataconductividad.reverse(),
                   },
               ]
           }
@@ -474,7 +452,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime,
+              labels: obj.arradataTime.reverse(),
               datasets: [
                   {
                       label: "Ph",
@@ -506,7 +484,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydataph,
+                      data: this.arraydataph.reverse(),
                   },
               ]
           }
@@ -533,7 +511,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime,
+              labels: obj.arradataTime.reverse(),
               datasets: [
                   {
                       label: "Total Solidos Disueltos",
@@ -565,7 +543,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydatatds,
+                      data: this.arraydatatds.reverse(),
                   },
               ]
           }
@@ -592,7 +570,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime,
+              labels: obj.arradataTime.reverse(),
               datasets: [
                   {
                       label: "Turbidez",
@@ -624,7 +602,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydataturbidez,
+                      data: this.arraydataturbidez.reverse(),
                   },
               ]
           }
