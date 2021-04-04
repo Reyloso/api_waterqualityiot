@@ -15,7 +15,7 @@
               <div class="title">
                 <div class="icon"><i class="fa fa-microchip"></i></div><strong>Dispositivos</strong>
               </div>
-              <div class="number dashtext-1">5</div>
+              <div class="number dashtext-1"> {{devices_num}}  </div>
             </div>
             <!-- <div class="progress progress-template">
               <div role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
@@ -28,7 +28,7 @@
               <div class="title">
                 <div class="icon"><i class="fa fa-eyedropper"></i></div><strong>Muestras Hoy</strong>
               </div>
-              <div class="number dashtext-2">375</div>
+              <div class="number dashtext-2"> {{measurement_today}} </div>
             </div>
             <!-- <div class="progress progress-template">
               <div role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
@@ -41,7 +41,20 @@
               <div class="title">
                 <div class="icon"><i class="fa fa-power-off"></i></div><strong>Dispositivos En Uso</strong>
               </div>
-              <div class="number dashtext-3">2</div>
+              <div class="number dashtext-3">{{devices_active_num}}</div>
+            </div>
+            <!-- <div class="progress progress-template">
+              <div role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+            </div> -->
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="statistic-block block">
+            <div class="progress-details d-flex align-items-end justify-content-between">
+              <div class="title">
+                <div class="icon"><i class="fa fa-eyedropper"></i></div><strong>Total Muestras Tomadas</strong>
+              </div>
+              <div class="number dashtext-3">{{measurement_total}}</div>
             </div>
             <!-- <div class="progress progress-template">
               <div role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -64,7 +77,7 @@
       </div>
     </div>
   </section>
-  <section class="no-padding-bottom">
+  <!-- <section class="no-padding-bottom">
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-4">
@@ -94,6 +107,6 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
   
   {% endblock %}

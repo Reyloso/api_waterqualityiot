@@ -14,19 +14,27 @@ from django.utils import timezone as tz
 from datetime import date
 
 from datetime import datetime
+import datetime
 
 # Models
 from configurations.models import Country, Department, City
 from users.models import Staff
 from devices.models import Device
-from measurements.models import Measurement
+from measurements.models import (Measurement, Data_measurement)
 
 # Create your views here.
 @login_required
 def home(request):
-	context = admin.site.each_context(request)
-	context.update({'titulo': 'Inicio',})
-	return render(request,'base/home.html', context)
+    devices_num = Device.objects.filter(deleted_at=None).count()
+    devices_active_num = Device.objects.filter(deleted_at=None, status_device='Activo').count()
+    
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    measurement_today = Data_measurement.objects.filter(deleted_at=None, created_at__range=(today_min, today_max)).count()
+    measurement_total = Data_measurement.objects.filter(deleted_at=None).count()
+    context = admin.site.each_context(request)
+    context.update({'titulo': 'Inicio','devices_num':devices_num,'measurement_today':measurement_today,'devices_active_num':devices_active_num,'measurement_total':measurement_total})
+    return render(request,'base/home.html', context)
 
 # Listar ciudad
 class CountryListView(LoginRequiredMixin, ListView):
