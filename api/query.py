@@ -110,7 +110,7 @@ def filtro_dataMeasurement(queryset, **kwargs):
                                    models.Q(measurement__name__icontains=search_value))
 
     count = queryset.count()
-    queryset = queryset.order_by(order_column)[start:start + length]
+    queryset = queryset.order_by('-id')[start:start + length]
     return {
         'items': queryset,
         'count': count,

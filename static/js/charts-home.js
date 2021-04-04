@@ -97,7 +97,7 @@ $(document).ready(function () {
     // ------------------------------------------------------- //
     // Bar Chart
     // ------------------------------------------------------ //
-    var BARCHARTEXMPLE    = $('#barChartExample1');
+    // var BARCHARTEXMPLE    = $('#barChartExample1');
     var barChartExample = new Chart(BARCHARTEXMPLE, {
         type: 'line',
         options: {

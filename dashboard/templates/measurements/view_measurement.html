@@ -19,7 +19,7 @@
                 <div class="title">
                   <div class="icon"><i class="fa fa-microchip"></i></div><strong>Ph</strong>
                 </div>
-                <div class="number dashtext-1">5</div>
+                <div class="number dashtext-1">${ medicion.ph }</div>
               </div>
               <!-- <div class="progress progress-template">
                 <div role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
@@ -32,7 +32,7 @@
                 <div class="title">
                   <div class="icon"><i class="fa fa-eyedropper"></i></div><strong>Conductividad</strong>
                 </div>
-                <div class="number dashtext-2">375</div>
+                <div class="number dashtext-2">${ medicion.conductividad }</div>
               </div>
               <!-- <div class="progress progress-template">
                 <div role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
@@ -45,7 +45,7 @@
                 <div class="title">
                   <div class="icon"><i class="fa fa-power-off"></i></div><strong>Turbidez</strong>
                 </div>
-                <div class="number dashtext-3">2</div>
+                <div class="number dashtext-3">${ medicion.turbidez }</div>
               </div>
               <!-- <div class="progress progress-template">
                 <div role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -71,7 +71,7 @@
                 <div class="title">
                   <div class="icon"><i class="fa fa-power-off"></i></div><strong>Sólidos Disueltos Totales (TDS)</strong>
                 </div>
-                <div class="number dashtext-3">350</div>
+                <div class="number dashtext-3">${ medicion.tds }</div>
               </div>
               <!-- <div class="progress progress-template">
                 <div role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -102,7 +102,7 @@
         
         <div class="col-lg-6">
           <div class="drills-chart block">
-            <canvas id="lineChartmonteria"></canvas>
+            <canvas id="conductividadGrafica"></canvas>
           </div>
         </div>
         <div class="col-lg-6">
@@ -146,7 +146,15 @@
             </thead>
             <tbody id="bodyDatatable">
              
-             
+              <tr  v-for="m in mediciones_list">
+                <td >${ m.id }</td>
+                <td >${ m.temperatura } C°</td>
+                <td >${ m.ph } %</td>
+                <td> ${ m.turbidez } PPM</td>
+                <td> ${ m.conductividad } PPM </td>
+                <td> ${ m.tds } </td>
+                <td> ${ m.time } </td>
+             </tr>
             
             </tbody>
           </table>
@@ -199,6 +207,7 @@
         arraydataturbidez: [],
         arraydatatds: [],
         arraydataconductividad: [],
+        arradataTime:[],
       },
       created: function () {
         this.loadData()
@@ -210,49 +219,42 @@
             obj = this
             axios.get('/api/measurements/data/'+ obj.device).then(function (response) {
                 var data =  response.data
-                console.log(data.data)
+                // console.log(data.data)
                 mediciones = data.data
-                ultima = mediciones[mediciones.length -1]
-                console.log(ultima)
+                ultima = mediciones[0]
+                // console.log(ultima)
                 obj.medicion.temperatura = ultima.temperatura
-                obj.medicion.humedad = ultima.humedad
-                obj.medicion.gas = ultima.gas
-                obj.medicion.concentracion = ultima.concentracion
-                obj.mision.id = data.data.id
-                obj.mision.nombre = data.data.nombre
-                obj.mision.comandante = data.data.comandante.get_full_name
-                date = new Date (data.data.fecha_creacion)
-                obj.mision.fecha = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
-                obj.mision.hora =  date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds()
-                obj.estadoBool = data.data.estado
-                if(data.data.estado==true){
-                    obj.mision.estado = "Activa"
-                }else{
-                    obj.mision.estado = "Inactiva"
-                }
-                obj.arraydatatemp = data.temperatura
-                obj.arraydataHum = data.humedad
-                obj.arraydataGas = data.gas
-                obj.arraydataCon = data.concentracion
+                obj.medicion.ph = ultima.ph
+                obj.medicion.tds = ultima.tds
+                obj.medicion.turbidez = ultima.turbidez
+                obj.medicion.conductividad = ultima.conductividad
 
-                obj.graficaTemp(data.temperatura)
-                obj.graficaHum(data.humedad)
-                obj.graficaGas(data.gas)
-                obj.graficaCon(data.concentracion)
-                    
+
+                // obj.mision.id = data.data.id
+                // obj.mision.nombre = data.data.nombre
+                // obj.mision.comandante = data.data.comandante.get_full_name
+                obj.mediciones_list = mediciones
+                // console.log(mediciones.temperatura)
+                // obj.arraydatatemp = data.temperatura
+                // obj.arraydataHum = data.humedad
+                // obj.arraydataGas = data.gas
+                // obj.arraydataCon = data.concentracion
+                console.log(mediciones)
                 for(key in mediciones){
-                    data = JSON.parse(mediciones[key].data)
-                    date = new Date (mediciones[key].fecha_creacion)
-                    row_medicion = {
-                        id : key,
-                        fecha: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + "   " + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds(),
-                        temperatura: data.temperatura,
-                        humedad : data.humedad,
-                        gas: data.gas,
-                        concentracion: data.concentracion
-                    }
-                    obj.mediciones_list.push(row_medicion)
+                  console.log(mediciones[key].ph)
+                  obj.arraydatatemp.push(mediciones[key].temperatura);
+                  obj.arraydataph.push(mediciones[key].ph);
+                  obj.arraydataturbidez.push(mediciones[key].turbidez);
+                  obj.arraydatatds.push(mediciones[key].tds);
+                  obj.arraydataconductividad.push(mediciones[key].conductividad);
+                  obj.arradataTime.push(mediciones[key].time);
                 }
+                obj.graficaTemp(mediciones)
+                // obj.graficaHum(data.humedad)
+                // obj.graficaGas(data.gas)
+                // obj.graficaCon(data.concentracion)
+                // console.log("liiasjdas ",obj.mediciones_list)
+              
             }).catch(function (error) {
                 console.log(error)
             })
@@ -325,66 +327,65 @@
         //         console.log(error)
         //       })
         // },
-        // graficaTemp(data){
-        //     var date = data
-        //     var graficatem = Highcharts.chart('graficaTemperatura', {
-        //         chart: {
-        //             type: 'spline',
-        //             scrollablePlotArea: {
-        //                 minWidth: 600,
-        //                 scrollPositionX: 1
-        //             }
-        //         },
-        //         title: {
-        //             text: 'Temperatura'
-        //         },
-        //         subtitle: {
-        //             text: 'Calidad Del Aire V 2.0'
-        //         },
-        //         xAxis: {
-        //             type: 'datetime',
-        //             labels: {
-        //                 overflow: 'justify'
-        //             }
-        //         },
-        //         yAxis: {
-        //             title: {
-        //                 text: '°C'
-        //             },
-        //             minorGridLineWidth: 0,
-        //             gridLineWidth: 0,
-        //             alternateGridColor: null,
-        //             plotBands: []
-        //         },
-        //         tooltip: {
-        //             valueSuffix: ' °C'
-        //         },
-        //         plotOptions: {
-        //             spline: {
-        //                 lineWidth: 4,
-        //                 states: {
-        //                     hover: {
-        //                         lineWidth: 5
-        //                     }
-        //                 },
-        //                 marker: {
-        //                     enabled: false
-        //                 },
-        //                 pointInterval: 1000, // one hour
-        //                 pointStart: Date.UTC(2018, 1, 13, 0, 0, 0)
-        //             }
-        //         },
-        //         series: [{
-        //             name: 'Temperatura',
-        //             data: date
-        //         }],
-        //         navigation: {
-        //             menuItemStyle: {
-        //                 fontSize: '10px'
-        //             }
-        //         }
-        //     });
-        // },
+        graficaTemp(data){
+          var BARCHARTEXMPLE  = $('#conductividadGrafica');
+          var barChartExample = new Chart(BARCHARTEXMPLE, {
+          type: 'line',
+          options: {
+              scales: {
+                  xAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }],
+                  yAxes: [{
+                      display: false,
+                      gridLines: {
+                          color: '#eee'
+                      }
+                  }]
+              },
+          },
+          data: {
+              labels: obj.arradataTime,
+              datasets: [
+                  {
+                      label: "Temperatura",
+                      backgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      hoverBackgroundColor: [
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)",
+                          "rgba(134, 77, 217, 0.57)"
+                      ],
+                      borderColor: [
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)",
+                          "rgba(134, 77, 217, 1)"
+                      ],
+                      borderWidth: 1,
+                      data: this.arraydatatemp,
+                  },
+              ]
+          }
+      });
+        },
         // graficaHum(data){
         //     var date = data
         //     var graficatem = Highcharts.chart('graficaHumedad', {

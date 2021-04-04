@@ -23,7 +23,7 @@ from api.query import filtro_dataMeasurement
 class DataMeasurementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Data_measurement
-        fields = fields = ('id','ph','tds', 'turbidez','temperatura','conductividad','device','measurement')
+        fields = fields = ('id','ph','tds', 'turbidez','temperatura','conductividad','device','measurement', 'time')
 
 
 class DataMeasurementeCreatedView(generics.ListCreateAPIView):
@@ -84,7 +84,7 @@ class MeasurementeListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk):
-        query = Data_measurement.objects.filter(device_id=pk)
+        query = Data_measurement.objects.filter(device_id=pk).order_by('-id')
         queryset = self.filter_queryset(query)
         group = filtro_dataMeasurement(queryset, **request.query_params)
         serializer = DataMeasurementSerializer(group['items'], many=True)
