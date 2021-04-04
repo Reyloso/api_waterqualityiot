@@ -272,7 +272,7 @@
           var obj=this
           try{
             
-                this.clientWs = new WebSocket(this.host_ws+'3');
+                this.clientWs = new WebSocket(this.host_ws+this.device);
 
                   this.clientWs.onopen = function(){
                       // console.log(this.clientWs.readyState)
