@@ -824,6 +824,14 @@ def group_new(request):
 	return render(request,'users/group_new.html', context)
 
 
+
+@login_required
+def group_update(request, pk):
+	grupo = Group.objects.get(pk=pk)
+	context = admin.site.each_context(request)
+	context.update({'titulo': 'Editar Grupo','grupo':grupo})
+	return render(request,'users/group_edit.html', context)    
+
 def device_list_measurement(request):
     devices = Device.objects.filter(deleted_at=None)
     context = admin.site.each_context(request)
