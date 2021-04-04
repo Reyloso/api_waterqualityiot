@@ -3,6 +3,8 @@
 {% block contenido %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/datatables_boostrap.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/datatable_responsive_boostrap.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.4.0/dist/sweetalert2.all.min.js" crossorigin="anonymous"></script>
+
   
 <div class="page-header">
     <div class="container-fluid">
@@ -18,32 +20,25 @@
             <div class="form-group row">
               <label class="col-sm-3 form-control-label">Nombre</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control">
+                <input id="nombre" type="text" class="form-control">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-3 form-control-label">Permisos</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control">
+                
+              <select name="permissions[]" class="permissions form-control" id="permissions" multiple="multiple" data-placeholder="Select a category..." >
+               </select>
               </div>
-            </div>
-           
+          </div>            
             <div class="line"></div>
-            <div class="form-group row">
-              <label class="col-sm-3 form-control-label">Estado</label>
-              <div class="col-sm-9">
-                <select name="account" class="form-control mb-3 mb-3">
-                  <option>ACTIVO</option>
-                  <option>INACTIVO</option>
-                </select>
-              </div>
-            </div>
+    
             
             <div class="line"></div>
             <div class="form-group row">
               <div class="col-sm-9 ml-auto">
-                <button type="submit" class="btn btn-secondary">Volver</button>
-                <button type="submit" class="btn btn-success">Guardar</button>
+                <a href="{% url 'group_list' %}" class="btn btn-secondary">Volver</a>
+                <a onclick="CreateOrUpdate()"class="btn btn-success">Guardar</a>
               </div>
             </div>
           </form>
@@ -53,8 +48,13 @@
   </section>
   
  
- 
-  <script  type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="{% static 'peticiones/peticiones.js' %}" type="text/javascript"></script>
+  <!-- <script  type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js" ></script> -->
+  <!-- <script src="//code.jquery.com/jquery-1.12.4.js"></script> -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+
   <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_jquery.js' %}" defer > </script>
 
   <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_boostrap.js' %}" defer > </script>
@@ -62,13 +62,34 @@
   <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_min.js' %}" defer > </script>
   <script type="text/javascript" src= "{% static 'vendor/datatables/tables_datatables.js' %}" defer > </script>
 <script type="text/javascript">
-        $(document).ready(function(){
-            $('#datatable1').DataTable({
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-        }
-    });
+    var select= $('.permissions');
+    var token =  "{{ csrf_token }}" 
+    get('/permisos-lista').then(result => {
+              var jsonData = result.data;
+              select.val([]);
+                select.trigger('change');
+                $.each(jsonData, function (id, obj) {
+                    var newOption = new Option(obj.name, id, false, false);
+                    select.append(newOption).trigger('change');
+                    jQuery.noConflict();
+                });
         });
+        var id = null;
+        function CreateOrUpdate(){
+          if(id == null){
+          this.data = {
+              'name': document.getElementById('nombre').value,
+              'permissions': $("#permissions").val(),
+          }
+          console.log("1",this.data)
+          post('/roles-lista',this.data, "{{ csrf_token }}").then(result=>{
+            location.href="{% url 'group_list' %}"
+              }).catch(function (error) {
+              console.log(error)
+          })
+            
+        }
+      }        
 </script>
   
   {% endblock %}
