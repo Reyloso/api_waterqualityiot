@@ -84,7 +84,7 @@ class MeasurementeListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk):
-        query = Data_measurement.objects.filter(device_id=pk).order_by('-id')
+        query = Data_measurement.objects.filter(device_id=pk).order_by('-id')[:100]
         queryset = self.filter_queryset(query)
         group = filtro_dataMeasurement(queryset, **request.query_params)
         serializer = DataMeasurementSerializer(group['items'], many=True)
