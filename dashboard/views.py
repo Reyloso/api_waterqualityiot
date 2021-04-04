@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group, Permission
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView,UpdateView,DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -777,7 +778,7 @@ class MeasurementsUpdateView(LoginRequiredMixin, UpdateView):
 
 
 
-# Eliminar departamento
+# Eliminar Medicion
 class MeasurementsDeleteView(LoginRequiredMixin, DeleteView):
     login_url = '/login/'
     model = Measurement
@@ -809,12 +810,12 @@ class MeasurementsDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-
-
-def groups_list(request):
+@login_required
+def inicioRoles(request):
 	context = admin.site.each_context(request)
-	context.update({'titulo': 'Grupos',})
-	return render(request,'users/group_list.html', context)
+	context.update({'titulo': 'Roles',})
+	return render(request, 'users/group_list.html',context)
+
 
 	
 def group_new(request):

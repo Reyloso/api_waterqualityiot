@@ -35,8 +35,11 @@ urlpatterns = [
     path('users/update/<int:pk>/', views.UserUpdateView.as_view(), name='users_update'),
     path('users/delete/<int:pk>/', views.UserDeleteView.as_view(), name='users_delete'),
 
-    path('group/', views.groups_list, name='groups-list'),
-    path('group/new', views.group_new, name='group-new'),
+    # Grupos y roles
+    # path('groups/list', views.GroupsListView.as_view(), name='groups_list'),
+    path('groups/add/', views.group_new, name='groups_create'),
+
+    path('groups/list', views.inicioRoles, name='group_list'),
 
     # Country
     path('country/list', views.CountryListView.as_view(), name='country_list'),
