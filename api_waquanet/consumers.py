@@ -30,7 +30,7 @@ class DataConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,
             {
-                'type': 'send_confirmation',
+                'type': 'send_data',
                 'message': text_data_json['message'],
                 'code': text_data_json['code'],
                 'data': text_data_json['data'],
@@ -39,7 +39,7 @@ class DataConsumer(WebsocketConsumer):
         print("enviado consumer")
 
     # Receive message from sheet group
-    def send_confirmation(self, event):
+    def send_data(self, event):
         # Send sheet_name to WebSocket
         self.send(text_data=json.dumps({
             'message': event['message'],
