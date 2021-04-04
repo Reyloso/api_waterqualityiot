@@ -38,6 +38,7 @@ urlpatterns = [
     # Grupos y roles
     # path('groups/list', views.GroupsListView.as_view(), name='groups_list'),
     path('groups/add/', views.group_new, name='groups_create'),
+    path('groups/update/<int:pk>/', views.group_update, name='groups_update'),
 
     path('groups/list', views.inicioRoles, name='group_list'),
 
