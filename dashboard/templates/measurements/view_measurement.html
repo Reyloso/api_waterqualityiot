@@ -3,7 +3,7 @@
 {% block contenido %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/datatables_boostrap.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/datatable_responsive_boostrap.css' %}">
-  
+<div id="app">
 <div class="page-header">
     <div class="container-fluid">
       <h2 class="h5 no-margin-bottom">{{ titulo }} {{device.name}}</h2>
@@ -56,9 +56,9 @@
             <div class="statistic-block block">
               <div class="progress-details d-flex align-items-end justify-content-between">
                 <div class="title">
-                  <div class="icon"><i class="fa fa-power-off"></i></div><strong>Temperatura</strong>
+                  <div class="icon"><i class="fa fa-power-off"></i></div><strong>Temperatura °C</strong>
                 </div>
-                <div class="number dashtext-3">25°</div>
+                <div class="number dashtext-3">${ medicion.temperatura } °C</div>
               </div>
               <!-- <div class="progress progress-template">
                 <div role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -144,70 +144,9 @@
                 
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>29°</td>
-                <td>5</td>
-                <td>32</td>
-                <td>25</td>
-                <td>370</td>
-                <td>15/02/2021 11:00:00 am</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>29°</td>
-                <td>6</td>
-                <td>20</td>
-                <td>26</td>
-                <td>400</td>
-                <td>15/02/2021 11:00:20 am</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>28°</td>
-                <td>4</td>
-                <td>30</td>
-                <td>25</td>
-                <td>350</td>
-                <td>15/02/2021 11:00:40 am</td>
-              </tr>
-              <tr>
-                <th scope="row">4</th>
-                <td>28°</td>
-                <td>4</td>
-                <td>30</td>
-                <td>25</td>
-                <td>340</td>
-                <td>15/02/2021 11:01:00 am</td>
-              </tr>
-              <tr>
-                <th scope="row">5</th>
-                <td>28°</td>
-                <td>4</td>
-                <td>30</td>
-                <td>25</td>
-                <td>360</td>
-                <td>15/02/2021 11:01:20 am</td>
-              </tr>
-              <tr>
-                <th scope="row">6</th>
-                <td>30°</td>
-                <td>3</td>
-                <td>27</td>
-                <td>27</td>
-                <td>350</td>
-                <td>15/02/2021 11:01:40 am</td>
-              </tr>
-              <tr>
-                <th scope="row">7</th>
-                <td>31°</td>
-                <td>4</td>
-                <td>31</td>
-                <td>30</td>
-                <td>350</td>
-                <td>15/02/2021 11:02:00 am</td>
-              </tr>
+            <tbody id="bodyDatatable">
+             
+             
             
             </tbody>
           </table>
@@ -215,17 +154,421 @@
 
       </div>
   </section>
+</div>
   
  
  
   <script  type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
   <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_jquery.js' %}" defer > </script>
-
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="{% static 'peticiones/peticiones.js' %}" type="text/javascript"></script>
   <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_boostrap.js' %}" defer > </script>
   <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_boostrap.js' %}" defer > </script>
   <script type="text/javascript" src= "{% static 'vendor/datatables/datatable_responsive_min.js' %}" defer > </script>
   <script type="text/javascript" src= "{% static 'vendor/datatables/tables_datatables.js' %}" defer > </script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script type="text/javascript">
+    new Vue({
+      el: '#app',
+      delimiters: ['${','}'],
+      data: {
+        token:"{{ csrf_token }}",
+        usuario:"{{user.username}}",
+        device:"{{ device.id }}",
+        host_ws:'wss://app.waterqualityiot.co:8001/measurement/send/',
+        medicion:{
+            ph:0,
+            temperatura:0,
+            turbidez:0,
+            tds:0,
+            conductividad:0
+        },
+        mision: {
+            id:0,
+            nombre:"",
+            comandante:"",
+            fecha: "",
+            estado:"",
+            estadoBool:false
+        },
+        mediciones_list: [],
+        arraydataph: [],
+        arraydatatemp: [],
+        arraydataturbidez: [],
+        arraydatatds: [],
+        arraydataconductividad: [],
+      },
+      created: function () {
+        this.loadData()
+        // this.crearConexion()
+       
+    },
+      methods: {
+        loadData(){
+            obj = this
+            axios.get('/api/measurements/data/'+ obj.device).then(function (response) {
+                var data =  response.data
+                console.log(data.data)
+                mediciones = data.data
+                ultima = mediciones[mediciones.length -1]
+                console.log(ultima)
+                obj.medicion.temperatura = ultima.temperatura
+                obj.medicion.humedad = ultima.humedad
+                obj.medicion.gas = ultima.gas
+                obj.medicion.concentracion = ultima.concentracion
+                obj.mision.id = data.data.id
+                obj.mision.nombre = data.data.nombre
+                obj.mision.comandante = data.data.comandante.get_full_name
+                date = new Date (data.data.fecha_creacion)
+                obj.mision.fecha = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
+                obj.mision.hora =  date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds()
+                obj.estadoBool = data.data.estado
+                if(data.data.estado==true){
+                    obj.mision.estado = "Activa"
+                }else{
+                    obj.mision.estado = "Inactiva"
+                }
+                obj.arraydatatemp = data.temperatura
+                obj.arraydataHum = data.humedad
+                obj.arraydataGas = data.gas
+                obj.arraydataCon = data.concentracion
+
+                obj.graficaTemp(data.temperatura)
+                obj.graficaHum(data.humedad)
+                obj.graficaGas(data.gas)
+                obj.graficaCon(data.concentracion)
+                    
+                for(key in mediciones){
+                    data = JSON.parse(mediciones[key].data)
+                    date = new Date (mediciones[key].fecha_creacion)
+                    row_medicion = {
+                        id : key,
+                        fecha: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + "   " + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds(),
+                        temperatura: data.temperatura,
+                        humedad : data.humedad,
+                        gas: data.gas,
+                        concentracion: data.concentracion
+                    }
+                    obj.mediciones_list.push(row_medicion)
+                }
+            }).catch(function (error) {
+                console.log(error)
+            })
+        },
+        // crearConexion() {
+        //     // obj.$vs.notify({title:'Creando...',text:'Creando cliente de mqtt',color:'success'})
+        //     this.client = new Paho.MQTT.Client(this.host_mqtt, Number(this.port_mqtt), this.usuario)
+        //     // console.log(this.client)
+        //     // obj.$vs.notify({title:'Creado...',text:'Cliente creado de forma exitosa',color:'success'})
+        //     this.client.onConnectionLost = this.onConnectionLost
+        //     this.client.onMessageArrived = this.onMessageArrived
+        //     // obj.$vs.notify({title:'conectando...',text:'Conectando con el broker',color:'success'})
+        //     this.client.connect({ 
+        //         onSuccess: this.onConnect
+        //     })
+        // },
+        
+        // onMessageArrived(message) {
+        //     console.log("onMessageArrived:" + message.payloadString)
+        //     data = JSON.parse(message.payloadString);
+        //     this.medicion.temperatura = data.Temperatura
+        //     this.medicion.humedad = data.Humedad
+        //     this.medicion.gas = data.Gas
+        //     this.medicion.concentracion = data.Concentracion
+        //     var date = new Date()
+        //     this.arraydatatemp.push(data.Temperatura)
+        //     this.arraydataHum.push(data.Humedad)
+        //     this.arraydataGas.push(data.Gas)
+        //     this.arraydataCon.push(data.Concentracion)
+        //     this.graficaTemp(this.arraydatatemp)
+        //     this.graficaHum(this.arraydataHum)
+        //     this.graficaGas(this.arraydataGas)
+        //     this.graficaCon(this.arraydataCon)
+        //     row_medicion = {
+        //                 id : (this.mediciones_list.length -1)+1,
+        //                 fecha: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + "   " + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds(),
+        //                 temperatura: data.Temperatura,
+        //                 humedad : data.Humedad,
+        //                 gas: data.Gas,
+        //                 concentracion: data.Concentracion
+        //     }
+        //     this.mediciones_list.push(row_medicion)
+        //     objeto = {"data": JSON.stringify(this.medicion)}
+        //     axios.post("mediciones",objeto, {headers: {"X-CSRFToken": obj.token}}).then(function (response) {
+                
+        //     }).catch(function (error) {
+        //         console.log(error)
+        //     });
+        // },
+        // changestatus(){
+        //     obj = this
+        //     var m = {}
+        //     // console.log(obj.mision.estadoBool)
+        //     if(obj.mision.estadoBool==true){
+        //         obj.mision.estadoBool=false
+        //         obj.mision.estado = "Inactiva"
+        //         m = {
+        //             estado:false
+        //         }
+        //     }else{
+        //         obj.mision.estado = "Activa"
+        //         obj.mision.estadoBool=true
+        //         m = {
+        //             estado:true
+        //         }
+        //     }
+        //     axios.patch("misiones/" + obj.mision.id, m, {headers: {"X-CSRFToken": obj.token,'Content-Type': 'application/json' }
+        //       }).then(function (response) {
+        //       }).catch(function (error) {
+        //         console.log(error)
+        //       })
+        // },
+        // graficaTemp(data){
+        //     var date = data
+        //     var graficatem = Highcharts.chart('graficaTemperatura', {
+        //         chart: {
+        //             type: 'spline',
+        //             scrollablePlotArea: {
+        //                 minWidth: 600,
+        //                 scrollPositionX: 1
+        //             }
+        //         },
+        //         title: {
+        //             text: 'Temperatura'
+        //         },
+        //         subtitle: {
+        //             text: 'Calidad Del Aire V 2.0'
+        //         },
+        //         xAxis: {
+        //             type: 'datetime',
+        //             labels: {
+        //                 overflow: 'justify'
+        //             }
+        //         },
+        //         yAxis: {
+        //             title: {
+        //                 text: '°C'
+        //             },
+        //             minorGridLineWidth: 0,
+        //             gridLineWidth: 0,
+        //             alternateGridColor: null,
+        //             plotBands: []
+        //         },
+        //         tooltip: {
+        //             valueSuffix: ' °C'
+        //         },
+        //         plotOptions: {
+        //             spline: {
+        //                 lineWidth: 4,
+        //                 states: {
+        //                     hover: {
+        //                         lineWidth: 5
+        //                     }
+        //                 },
+        //                 marker: {
+        //                     enabled: false
+        //                 },
+        //                 pointInterval: 1000, // one hour
+        //                 pointStart: Date.UTC(2018, 1, 13, 0, 0, 0)
+        //             }
+        //         },
+        //         series: [{
+        //             name: 'Temperatura',
+        //             data: date
+        //         }],
+        //         navigation: {
+        //             menuItemStyle: {
+        //                 fontSize: '10px'
+        //             }
+        //         }
+        //     });
+        // },
+        // graficaHum(data){
+        //     var date = data
+        //     var graficatem = Highcharts.chart('graficaHumedad', {
+        //         chart: {
+        //             type: 'spline',
+        //             scrollablePlotArea: {
+        //                 minWidth: 600,
+        //                 scrollPositionX: 1
+        //             }
+        //         },
+        //         title: {
+        //             text: 'Humedad'
+        //         },
+        //         subtitle: {
+        //             text: 'Calidad Del Aire V 2.0'
+        //         },
+        //         xAxis: {
+        //             type: 'datetime',
+        //             labels: {
+        //                 overflow: 'justify'
+        //             }
+        //         },
+        //         yAxis: {
+        //             title: {
+        //                 text: '%'
+        //             },
+        //             minorGridLineWidth: 0,
+        //             gridLineWidth: 0,
+        //             alternateGridColor: null,
+        //             plotBands: []
+        //         },
+        //         tooltip: {
+        //             valueSuffix: ' %'
+        //         },
+        //         plotOptions: {
+        //             spline: {
+        //                 lineWidth: 4,
+        //                 states: {
+        //                     hover: {
+        //                         lineWidth: 5
+        //                     }
+        //                 },
+        //                 marker: {
+        //                     enabled: false
+        //                 },
+        //                 pointInterval: 1000, // one hour
+        //                 pointStart: Date.UTC(2018, 1, 13, 0, 0, 0)
+        //             }
+        //         },
+        //         series: [{
+        //             name: 'Humedad',
+        //             data: date
+        //         }],
+        //         navigation: {
+        //             menuItemStyle: {
+        //                 fontSize: '10px'
+        //             }
+        //         }
+        //     });
+        // },
+        // graficaGas(data){
+        //     var date = data
+        //     var graficatem = Highcharts.chart('graficaGas', {
+        //         chart: {
+        //             type: 'spline',
+        //             scrollablePlotArea: {
+        //                 minWidth: 600,
+        //                 scrollPositionX: 1
+        //             }
+        //         },
+        //         title: {
+        //             text: 'GAS'
+        //         },
+        //         subtitle: {
+        //             text: 'Calidad Del Aire V 2.0'
+        //         },
+        //         xAxis: {
+        //             type: 'datetime',
+        //             labels: {
+        //                 overflow: 'justify'
+        //             }
+        //         },
+        //         yAxis: {
+        //             title: {
+        //                 text: 'PPM'
+        //             },
+        //             minorGridLineWidth: 0,
+        //             gridLineWidth: 0,
+        //             alternateGridColor: null,
+        //             plotBands: []
+        //         },
+        //         tooltip: {
+        //             valueSuffix: 'PPM'
+        //         },
+        //         plotOptions: {
+        //             spline: {
+        //                 lineWidth: 4,
+        //                 states: {
+        //                     hover: {
+        //                         lineWidth: 5
+        //                     }
+        //                 },
+        //                 marker: {
+        //                     enabled: false
+        //                 },
+        //                 pointInterval: 1000, // one hour
+        //                 pointStart: Date.UTC(2018, 1, 13, 0, 0, 0)
+        //             }
+        //         },
+        //         series: [{
+        //             name: 'GAS',
+        //             data: date
+        //         }],
+        //         navigation: {
+        //             menuItemStyle: {
+        //                 fontSize: '10px'
+        //             }
+        //         }
+        //     });
+        // },
+        // graficaCon(data){
+        //     var date = data
+        //     var graficatem = Highcharts.chart('graficaCon', {
+        //         chart: {
+        //             type: 'spline',
+        //             scrollablePlotArea: {
+        //                 minWidth: 600,
+        //                 scrollPositionX: 1
+        //             }
+        //         },
+        //         title: {
+        //             text: 'CONCENTRACIÓN'
+        //         },
+        //         subtitle: {
+        //             text: 'Calidad Del Aire V 2.0'
+        //         },
+        //         xAxis: {
+        //             type: 'datetime',
+        //             labels: {
+        //                 overflow: 'justify'
+        //             }
+        //         },
+        //         yAxis: {
+        //             title: {
+        //                 text: 'PPM'
+        //             },
+        //             minorGridLineWidth: 0,
+        //             gridLineWidth: 0,
+        //             alternateGridColor: null,
+        //             plotBands: []
+        //         },
+        //         tooltip: {
+        //             valueSuffix: 'PPM'
+        //         },
+        //         plotOptions: {
+        //             spline: {
+        //                 lineWidth: 4,
+        //                 states: {
+        //                     hover: {
+        //                         lineWidth: 5
+        //                     }
+        //                 },
+        //                 marker: {
+        //                     enabled: false
+        //                 },
+        //                 pointInterval: 1000, // one hour
+        //                 pointStart: Date.UTC(2018, 1, 13, 0, 0, 0)
+        //             }
+        //         },
+        //         series: [{
+        //             name: 'CONCENTRACIÓN',
+        //             data: date
+        //         }],
+        //         navigation: {
+        //             menuItemStyle: {
+        //                 fontSize: '10px'
+        //             }
+        //         }
+        //     });
+        // },
+
+      }
+    })
+                
       
 </script>
   

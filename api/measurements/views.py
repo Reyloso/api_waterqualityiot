@@ -17,6 +17,8 @@ channel_layer = get_channel_layer()
 from measurements.models import (Data_measurement, Measurement)
 from devices.models import Device
 
+from api.query import filtro_dataMeasurement
+
 
 class DataMeasurementSerializer(serializers.ModelSerializer):
     class Meta:
@@ -73,3 +75,35 @@ class DataMeasurementeCreatedView(generics.ListCreateAPIView):
             data = {'message':e.args[0], 'code': 2, 'data':None}
 
         return Response(data=data, status=200)
+
+
+class MeasurementeListView(generics.ListCreateAPIView):
+    queryset = Data_measurement.objects.filter(deleted_at=None)
+    serializer_class = DataMeasurementSerializer
+    http_method_names = ['post','get']
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        query = Data_measurement.objects.filter(device_id=pk)
+        queryset = self.filter_queryset(query)
+        group = filtro_dataMeasurement(queryset, **request.query_params)
+        serializer = DataMeasurementSerializer(group['items'], many=True)
+        result = dict()
+        result['message'] = 'Lista de mediciones'
+        result['code'] = 1
+        result['data'] = serializer.data
+        result['draw'] = group['draw']
+        result['recordsTotal'] = group['total']
+        result['recordsFiltered'] = group['count']
+
+        if serializer:
+            return Response(result, status=200, template_name=None, content_type=None)
+        else:
+            result = dict()
+            result['message'] = 'Lista de mediciones'
+            result['code'] = 1
+            result['data'] = None
+            result['draw'] = 0
+            result['recordsTotal'] = 0
+            result['recordsFiltered'] = 0
+            return Response(result, status=200, template_name=None, content_type=None)
