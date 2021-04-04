@@ -12,25 +12,18 @@
   <section class="no-padding-top no-padding-bottom">
     <div class="container-fluid">
         <div class="row">
+          {% for device in devices %}
           <div class="col-md-6 col-lg-6">
             <!-- Simple card-->
             <div class="card" style="padding-top: 28px; display: flex; align-items: center;"><i style="font-size: xx-large;" class="fa fa-microchip fa-7x"></i>
               <div class="card-body">
-                <h5 class="card-title">Dispositivo </h5>
-                <p class="card-text">Ubicación: Monteria.</p><a  href="{% url 'measurement-view'  %}" class="btn btn-primary">Ver Medición</a>
+                <h5 class="card-title">Dispositivo: {{ device.name}}</h5>
+                <p class="card-text">Ubicación: {{ device.city.name }}</p><a  href="{% url 'measurement-view' device.id  %}" class="btn btn-primary">Ver Medición</a>
               </div>
             </div>
             
-          </div>
           <div class="col-md-6 col-lg-6">
-          <div class="card" style="padding-top: 28px; display: flex; align-items: center;"><i style="font-size: xx-large;" class="fa fa-microchip fa-7x"></i>
-            <div class="card-body">
-              <h5 class="card-title">Dispositivo 2</h5>
-              <p class="card-text">Ubicación: Cereté.</p><a  href="{% url 'measurement-view'  %}" class="btn btn-primary">Ver Medición</a>
-            </div>
-          </div>
-        </div>
-         
+          {% endfor %}
         </div>
         </div>
           <!-- end col--> 

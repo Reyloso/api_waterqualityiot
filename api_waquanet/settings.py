@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'configurations',
     'devices',
     'measurements',
+    'channels',
     
 ]
 
@@ -80,6 +81,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'api_waquanet.wsgi.application'
+ASGI_APPLICATION = 'api_waquanet.routing.application'
+
 
 
 # django rest framework config

@@ -825,11 +825,13 @@ def group_new(request):
 
 
 def device_list_measurement(request):
-	context = admin.site.each_context(request)
-	context.update({'titulo': 'Seleccionar Dispositivo',})
-	return render(request,'measurements/devices_list.html', context)
+    devices = Device.objects.filter(deleted_at=None)
+    context = admin.site.each_context(request)
+    context.update({'titulo': 'Seleccionar Dispositivo','devices':devices,})
+    return render(request,'measurements/devices_list.html', context)
 
-def measurement_view(request):
-	context = admin.site.each_context(request)
-	context.update({'titulo': 'Mediciones De Dispositivo',})
-	return render(request,'measurements/view_measurement.html', context)
+def measurement_view(request, pk):
+    device = Device.objects.get(pk=pk)
+    context = admin.site.each_context(request)
+    context.update({'titulo': 'Mediciones De','device':device})
+    return render(request,'measurements/view_measurement.html', context)

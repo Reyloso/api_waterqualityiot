@@ -9,6 +9,11 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from api.permissions import (IsAuthenticated)
 
+#websocket
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+channel_layer = get_channel_layer()
+
 from measurements.models import (Data_measurement, Measurement)
 from devices.models import Device
 
@@ -45,6 +50,20 @@ class DataMeasurementeCreatedView(generics.ListCreateAPIView):
                     temperatura=request.data['temp'],conductividad=request.data['tds'], time=request.data['date_time'], 
                     device=device, dataJson=request.data, created_at=timezone.now())
                     data.save()
+                serializer = DataMeasurementSerializer(data)
+                try :
+                    async_to_sync(channel_layer.group_send)(
+                        str(device.id),
+                        {
+                            'type': 'send_data',
+                            'message': "data enviada",
+                            'code': 1,
+                            'data': serializer.data
+                        }
+                    )
+                except Exception:
+                    e = sys.exc_info()[1]
+                    data = {'message': e.args[0], 'code': 2, 'data':None}
 
                 data = {'message': 'Registro guardado con éxito', 'code': 1, 'data': None}
             else:
