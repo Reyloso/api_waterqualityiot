@@ -206,6 +206,7 @@
             estado:"",
             estadoBool:false
         },
+        clientWs:null,
         mediciones_list: [],
         arraydataph: [],
         arraydatatemp: [],
@@ -216,7 +217,7 @@
       },
       created: function () {
         this.loadData()
-        // this.crearConexion()
+        this.crearConexionWs()
        
     },
       methods: {
@@ -267,52 +268,55 @@
                 console.log(error)
             })
         },
-        // crearConexion() {
-        //     // obj.$vs.notify({title:'Creando...',text:'Creando cliente de mqtt',color:'success'})
-        //     this.client = new Paho.MQTT.Client(this.host_mqtt, Number(this.port_mqtt), this.usuario)
-        //     // console.log(this.client)
-        //     // obj.$vs.notify({title:'Creado...',text:'Cliente creado de forma exitosa',color:'success'})
-        //     this.client.onConnectionLost = this.onConnectionLost
-        //     this.client.onMessageArrived = this.onMessageArrived
-        //     // obj.$vs.notify({title:'conectando...',text:'Conectando con el broker',color:'success'})
-        //     this.client.connect({ 
-        //         onSuccess: this.onConnect
-        //     })
-        // },
+        crearConexionWs() {
+          var obj=this
+          try{
+            
+                this.clientWs = new WebSocket(this.host_ws+'3');
+
+                  this.clientWs.onopen = function(){
+                      // console.log(this.clientWs.readyState)
+                      console.log("abierto")
+                  }
+
+                  this.clientWs.onmessage = function(msg){
+                   
+                    data = JSON.parse(msg.data)
+                    data = data.data
+                    console.log(data.temperatura)
+                    // var arraytds = []
+                    // obj.arraydatatds
+                    obj.arraydatatds.reverse().push(data.tds)
+                    obj.arraydatatemp.reverse().push(data.temperatura)
+                    obj.arraydataturbidez.reverse().push(data.turbidez)
+                    obj.arradataTime.reverse().push(data.time)
+                    obj.arraydataconductividad.reverse().push(data.conductividad)
+                    obj.arraydataph.reverse().push(data.ph)
+                    obj.medicion.temperatura = data.temperatura
+                    obj.medicion.ph = data.ph
+                    obj.medicion.tds = data.tds
+                    obj.medicion.turbidez = data.turbidez
+                    obj.medicion.conductividad = data.conductividad
+
+                    obj.mediciones_list.unshift(data)
+
+                    obj.graficaTds()
+                    obj.graficaTemp()
+                    obj.graficaTurbidez()
+                    obj.graficaconductividad()
+                    obj.graficaPh()
+                    
+                  }
+
+                  this.clientWs.onclose = function(){
+                    // consoel.log(this.clientWs.readyState)
+                  }			
+
+              } catch(exception){
+                  console.log(exception)
+            }
+        },
         
-        // onMessageArrived(message) {
-        //     console.log("onMessageArrived:" + message.payloadString)
-        //     data = JSON.parse(message.payloadString);
-        //     this.medicion.temperatura = data.Temperatura
-        //     this.medicion.humedad = data.Humedad
-        //     this.medicion.gas = data.Gas
-        //     this.medicion.concentracion = data.Concentracion
-        //     var date = new Date()
-        //     this.arraydatatemp.push(data.Temperatura)
-        //     this.arraydataHum.push(data.Humedad)
-        //     this.arraydataGas.push(data.Gas)
-        //     this.arraydataCon.push(data.Concentracion)
-        //     this.graficaTemp(this.arraydatatemp)
-        //     this.graficaHum(this.arraydataHum)
-        //     this.graficaGas(this.arraydataGas)
-        //     this.graficaCon(this.arraydataCon)
-        //     row_medicion = {
-        //                 id : (this.mediciones_list.length -1)+1,
-        //                 fecha: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + "   " + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds(),
-        //                 temperatura: data.Temperatura,
-        //                 humedad : data.Humedad,
-        //                 gas: data.Gas,
-        //                 concentracion: data.Concentracion
-        //     }
-        //     this.mediciones_list.push(row_medicion)
-        //     objeto = {"data": JSON.stringify(this.medicion)}
-        //     axios.post("mediciones",objeto, {headers: {"X-CSRFToken": obj.token}}).then(function (response) {
-                
-        //     }).catch(function (error) {
-        //         console.log(error)
-        //     });
-        // },
-       
         graficaTemp(){
           var BARCHARTEXMPLE  = $('#temperaturagrafica');
           var barChartExample = new Chart(BARCHARTEXMPLE, {

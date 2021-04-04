@@ -21,7 +21,7 @@
                 {% url 'measurements_list' as Url %}  
                 <li  {% if request.path == Url  %} class="active show"  {% else  %}  class="" {% endif %} ><a href="{% url 'measurements_list'  %}"> <i class="fa fa-thermometer-three-quarters"></i>Mediciones</a></li>
                 {% url 'measurement-select' as Url %}  
-                <li  {% if request.path == Url  %} class="active show"  {% else  %}  class="" {% endif %} ><a  href="{% url 'measurement-select'  %}"> <i class="fa fa-thermometer-three-quarters"></i>otro</a></li>
+                <li  {% if request.path == Url  %} class="active show"  {% else  %}  class="" {% endif %} ><a  href="{% url 'measurement-select'  %}"> <i class="fa fa-thermometer-three-quarters"></i>Dispositivos en Tiempo Real</a></li>
                 
               </ul>
             </li> 
