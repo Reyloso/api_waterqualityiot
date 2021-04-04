@@ -27,7 +27,7 @@ urlpatterns = [
 
     path('measurement/', views.device_list_measurement, name='measurement-select'),
 
-    path('measurement/view', views.measurement_view, name='measurement-view'),
+    path('measurement/view/<int:pk>', views.measurement_view, name='measurement-view'),
 
     # Usuarios
     path('users/', views.users_list.as_view(), name='user_list'),
