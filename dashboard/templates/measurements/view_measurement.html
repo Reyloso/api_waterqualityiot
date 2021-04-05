@@ -247,7 +247,7 @@
                 // obj.arraydataCon = data.concentracion
                 console.log(mediciones)
                 for(key in mediciones){
-                  console.log(mediciones[key].ph)
+                  // console.log(mediciones[key].ph)
                   obj.arraydatatemp.push(mediciones[key].temperatura);
                   obj.arraydataph.push(mediciones[key].ph);
                   obj.arraydataturbidez.push(mediciones[key].turbidez);
@@ -283,15 +283,15 @@
                    
                     data = JSON.parse(msg.data)
                     data = data.data
-                    console.log(data.temperatura)
+                    // console.log(data.temperatura)
                     // var arraytds = []
                     // obj.arraydatatds
-                    obj.arraydatatds.reverse().push(data.tds)
-                    obj.arraydatatemp.reverse().push(data.temperatura)
-                    obj.arraydataturbidez.reverse().push(data.turbidez)
-                    obj.arradataTime.reverse().push(data.time)
-                    obj.arraydataconductividad.reverse().push(data.conductividad)
-                    obj.arraydataph.reverse().push(data.ph)
+                    obj.arraydatatds.unshift(data.tds)
+                    obj.arraydatatemp.unshift(data.temperatura)
+                    obj.arraydataturbidez.unshift(data.turbidez)
+                    obj.arradataTime.unshift(data.time)
+                    obj.arraydataconductividad.unshift(data.conductividad)
+                    obj.arraydataph.unshift(data.ph)
                     obj.medicion.temperatura = data.temperatura
                     obj.medicion.ph = data.ph
                     obj.medicion.tds = data.tds
@@ -338,7 +338,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime.reverse(),
+              labels: obj.arradataTime,
               datasets: [
                   {
                       label: "Temperatura",
@@ -370,7 +370,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydatatemp.reverse(),
+                      data: this.arraydatatemp,
                   },
               ]
           }
@@ -397,7 +397,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime.reverse(),
+              labels: obj.arradataTime,
               datasets: [
                   {
                       label: "Conductividad",
@@ -429,7 +429,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydataconductividad.reverse(),
+                      data: this.arraydataconductividad,
                   },
               ]
           }
@@ -456,7 +456,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime.reverse(),
+              labels: obj.arradataTime,
               datasets: [
                   {
                       label: "Ph",
@@ -488,7 +488,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydataph.reverse(),
+                      data: this.arraydataph,
                   },
               ]
           }
@@ -515,7 +515,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime.reverse(),
+              labels: obj.arradataTime,
               datasets: [
                   {
                       label: "Total Solidos Disueltos",
@@ -547,7 +547,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydatatds.reverse(),
+                      data: this.arraydatatds,
                   },
               ]
           }
@@ -574,7 +574,7 @@
               },
           },
           data: {
-              labels: obj.arradataTime.reverse(),
+              labels: obj.arradataTime,
               datasets: [
                   {
                       label: "Turbidez",
@@ -606,7 +606,7 @@
                           "rgba(134, 77, 217, 1)"
                       ],
                       borderWidth: 1,
-                      data: this.arraydataturbidez.reverse(),
+                      data: this.arraydataturbidez,
                   },
               ]
           }
