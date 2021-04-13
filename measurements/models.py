@@ -86,8 +86,8 @@ class Data_measurement(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        verbose_name = "Data de Medicion"
-        verbose_name_plural = "Datos de Mediciones"
+        verbose_name = "Data de la Medición"
+        verbose_name_plural = "Datos de las Mediciones"
         default_permissions = ()
         permissions = (
             ("add_data_measurement", "Puede guardar data de medicion"),
