@@ -35,46 +35,121 @@ class DataMeasurementeCreatedView(generics.ListCreateAPIView):
     def post(self, request,*args, **kwargs):
         device = Device.objects.filter(id=request.user.id)
         try:
-            if device:
-                device = device.last()
-                measurement = Measurement.objects.filter(device=device, status='Activa', deleted_at=None)
-                serializer = self.get_serializer(data=request.data)
-                if measurement:
-                    measurement = measurement.last()
+            with transaction.atomic():
+                if device:
+                    device = device.last()
+                    measurement = Measurement.objects.filter(device=device, status='Activa', deleted_at=None)
+                    serializer = self.get_serializer(data=request.data)
+                    if measurement:
+                        measurement = measurement.last()
 
-                    data = Data_measurement(ph=request.data['Ph'],tds=request.data['tds'],turbidez=request.data['turbidez'],
-                    temperatura=request.data['temp'],conductividad=request.data['tds'], time=request.data['date_time'], 
-                    device=device,measurement=measurement, created_at=timezone.now())
-                    data.save()
-                    
+                        data = Data_measurement(ph=request.data['Ph'],tds=request.data['tds'],turbidez=request.data['turbidez'],
+                        temperatura=request.data['temp'],conductividad=request.data['tds'], time=request.data['date_time'], 
+                        device=device,measurement=measurement, created_at=timezone.now())
+                        data.save()
+                        
+                    else:
+                        data = Data_measurement(ph=request.data['Ph'],tds=request.data['tds'],turbidez=request.data['turbidez'],
+                        temperatura=request.data['temp'],conductividad=request.data['tds'], time=request.data['date_time'], 
+                        device=device, dataJson=request.data, created_at=timezone.now())
+                        data.save()
+                    serializer = DataMeasurementSerializer(data)
+                    try :
+                        async_to_sync(channel_layer.group_send)(
+                            str(device.id),
+                            {
+                                'type': 'send_data',
+                                'message': "data enviada",
+                                'code': 1,
+                                'data': serializer.data
+                            }
+                        )
+                    except Exception:
+                        e = sys.exc_info()[1]
+                        data = {'message': e.args[0], 'code': 2, 'data':None}
+
+                    data = {'message': 'Registro guardado con éxito', 'code': 1, 'data': None}
                 else:
-                    data = Data_measurement(ph=request.data['Ph'],tds=request.data['tds'],turbidez=request.data['turbidez'],
-                    temperatura=request.data['temp'],conductividad=request.data['tds'], time=request.data['date_time'], 
-                    device=device, dataJson=request.data, created_at=timezone.now())
-                    data.save()
-                serializer = DataMeasurementSerializer(data)
-                try :
-                    async_to_sync(channel_layer.group_send)(
-                        str(device.id),
-                        {
-                            'type': 'send_data',
-                            'message': "data enviada",
-                            'code': 1,
-                            'data': serializer.data
-                        }
-                    )
-                except Exception:
-                    e = sys.exc_info()[1]
-                    data = {'message': e.args[0], 'code': 2, 'data':None}
-
-                data = {'message': 'Registro guardado con éxito', 'code': 1, 'data': None}
-            else:
-                data = {'message': 'usted no es un usuario valido para esta opcion', 'code': 2, 'data': None}
+                    data = {'message': 'usted no es un usuario valido para esta opcion', 'code': 2, 'data': None}
         except Exception:
             e = sys.exc_info()[1]
             data = {'message':e.args[0], 'code': 2, 'data':None}
 
         return Response(data=data, status=200)
+
+class DataMeasurementeBullCreatedView(generics.ListCreateAPIView):
+    queryset = Data_measurement.objects.filter(deleted_at=None)
+    serializer_class = DataMeasurementSerializer
+    http_method_names = ['post','get']
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request,*args, **kwargs):
+        device = Device.objects.filter(id=request.user.id)
+        try:
+            with transaction.atomic():
+                if device:
+                    device = device.last()
+                    measurement = Measurement.objects.filter(device=device, status='Activa', deleted_at=None)
+                    if measurement:
+                        measurement = measurement.last()
+                        if request.data['data']:
+                            for key in request.data['data']:
+                                data = Data_measurement(ph=key['Ph'],tds=key['tds'],turbidez=key['turbidez'],
+                                temperatura=key['temp'],conductividad=key['EC'], time=key['date_time'], 
+                                device=device,measurement=measurement, created_at=timezone.now(),dataJson=key)
+                                data.save()
+                                serializer = DataMeasurementSerializer(data)
+                                try :
+                                    async_to_sync(channel_layer.group_send)(
+                                        str(device.id),
+                                        {
+                                            'type': 'send_data',
+                                            'message': "data enviada",
+                                            'code': 1,
+                                            'data': serializer.data
+                                        }
+                                    )
+                                except Exception:
+                                    e = sys.exc_info()[1]
+                                    result = {'message': e.args[0], 'code': 2, 'data':None}
+                                    Response(data=result, status=200)
+
+                        else:
+                            raise Exception('la variable data:[] es requerida')
+                    else:
+                        if request.data['data']:
+                            for key in request.data['data']:
+                                data = Data_measurement(ph=key['Ph'],tds=key['tds'],turbidez=key['turbidez'],
+                                temperatura=key['temp'],conductividad=key['EC'], time=key['date_time'], 
+                                device=device, created_at=timezone.now(),dataJson=key)
+                                data.save()
+                                serializer = DataMeasurementSerializer(data)
+                                try :
+                                    async_to_sync(channel_layer.group_send)(
+                                        str(device.id),
+                                        {
+                                            'type': 'send_data',
+                                            'message': "data enviada",
+                                            'code': 1,
+                                            'data': serializer.data
+                                        }
+                                    )
+                                except Exception:
+                                    e = sys.exc_info()[1]
+                                    result = {'message': e.args[0], 'code': 2, 'data':None}
+                                    Response(data=result, status=200)
+
+                        else:
+                            raise Exception('la variable data:[] es requerida')
+                    
+                    result = {'message': 'Registro guardado con éxito', 'code': 1, 'data': None}
+                else:
+                    result = {'message': 'usted no es un usuario valido para esta opcion', 'code': 2, 'data': None}
+        except Exception:
+            e = sys.exc_info()[1]
+            result = {'message':e.args[0], 'code': 2, 'data':None}
+
+        return Response(data=result, status=200)
 
 
 class MeasurementeListView(generics.ListCreateAPIView):
