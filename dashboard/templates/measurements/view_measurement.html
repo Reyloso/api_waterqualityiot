@@ -191,6 +191,7 @@
         usuario:"{{user.username}}",
         device:"{{ device.id }}",
         host_ws:'wss://app.waterqualityiot.co:8001/measurement/send/',
+        // host_ws:'ws://localhost:8000/measurement/send/',
         medicion:{
             ph:0,
             temperatura:0,
@@ -235,17 +236,7 @@
                 obj.medicion.turbidez = ultima.turbidez
                 obj.medicion.conductividad = ultima.conductividad
 
-
-                // obj.mision.id = data.data.id
-                // obj.mision.nombre = data.data.nombre
-                // obj.mision.comandante = data.data.comandante.get_full_name
                 obj.mediciones_list = mediciones
-                // console.log(mediciones.temperatura)
-                // obj.arraydatatemp = data.temperatura
-                // obj.arraydataHum = data.humedad
-                // obj.arraydataGas = data.gas
-                // obj.arraydataCon = data.concentracion
-                console.log(mediciones)
                 for(key in mediciones){
                   // console.log(mediciones[key].ph)
                   obj.arraydatatemp.push(mediciones[key].temperatura);
@@ -260,9 +251,6 @@
                 obj.graficaPh()
                 obj.graficaTds()
                 obj.graficaTurbidez()
-                // obj.graficaGas(data.gas)
-                // obj.graficaCon(data.concentracion)
-                // console.log("liiasjdas ",obj.mediciones_list)
               
             }).catch(function (error) {
                 console.log(error)
