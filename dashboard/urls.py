@@ -60,4 +60,8 @@ urlpatterns = [
     path('city/add/', views.CityCreateView.as_view(), name='city_create'),
     path('city/update/<int:pk>/', views.CityUpdateView.as_view(), name='department_update'),
     path('city/delete/<int:pk>/', views.CityDeleteView.as_view(), name='city_delete'),
+
+
+    # Report
+    path('report/data', views.ReportDataListView.as_view(), name='report_data'),    
 ]

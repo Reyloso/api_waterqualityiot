@@ -7,4 +7,5 @@ urlpatterns = [
     path('', include('api.devices.urls')),	
     path('', include('api.measurements.urls')),	
     path('', include('api.users.urls')),	
+    path('', include('api.reports.urls')),	
 ]

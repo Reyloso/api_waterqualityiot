@@ -48,6 +48,13 @@
                 <li  {% if request.path == Url  %} class="active show"  {% else  %}  class="" {% endif %} ><a href="{% url 'city_list'  %}"> <i class="fa fa-globe"></i>Ciudades</a></li>
                 
               </ul>
+            </li>
+            <li ><a href="#report" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-file"></i>Reportes</a>
+              <ul id="report" class="collapse list-unstyled ">
+                {% url 'report_data' as Url %}  
+                <li  {% if request.path == Url  %} class="active show"  {% else  %}  class="" {% endif %} ><a href="{% url 'report_data'  %}"> <i class="fa fa-globe"></i>Reporte De Mediciones</a></li>
+                
+              </ul>
             </li>            
             <!-- <li><a href="login.html"> <i class="icon-logout"></i>Login page </a></li> -->
     </ul>

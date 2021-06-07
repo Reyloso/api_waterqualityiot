@@ -16,6 +16,9 @@ from datetime import date
 from datetime import datetime
 import datetime
 
+
+import io
+
 # Models
 from configurations.models import Country, Department, City
 from users.models import Staff
@@ -851,3 +854,12 @@ def measurement_view(request, pk):
     context = admin.site.each_context(request)
     context.update({'titulo': 'Mediciones De','device':device})
     return render(request,'measurements/view_measurement.html', context)
+
+
+    
+# Listar departamento
+class ReportDataListView(LoginRequiredMixin, ListView):
+    login_url = '/login/'
+    model = Department
+    template_name = 'reports/report_data.html'
+
