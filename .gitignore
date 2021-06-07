@@ -25,6 +25,6 @@ dockerfile
 /devices/migrations
 /configurations/
 
-static
+
 /staticfiles
 
